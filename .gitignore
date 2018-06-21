@@ -2,4 +2,4 @@ __obsoletes__
 configuration
 documentations
 env
-
+__pycache__
