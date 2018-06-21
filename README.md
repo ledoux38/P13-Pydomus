@@ -27,11 +27,12 @@ NC
 ## Installation:
   1. Récupérer le programme sur les serveurs de Github
   `git clone https://github.com/ledoux38/P13-Pydomus.git`
-  2. Installer un environnement virtuel pour python
+  2. Ouvrir le dossier P13-Pydomus
+  3. Installer un environnement virtuel pour python
   `virtualenv -p python3 env`
-  3. Activation de l’environnement virtuel
+  4. Activation de l’environnement virtuel
   `source env/bin/activate`
-  4. Installation des dépendances
+  5. Installation des dépendances
   `pip install -r requirements.txt`
 
 ##Autres:
