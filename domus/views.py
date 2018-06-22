@@ -5,5 +5,22 @@ from django.http import HttpResponse
 # Create your views here.
 
 def index(request):
-    message = "Hello world!"
+    """ensures the display of the home page"""
+    message = "You asked for the index page"
+    return HttpResponse(message)
+
+def login(request):
+    """ensures the display of the login page
+    as well as the authentication
+    procedure of the user
+    """
+    message = "You asked for the login page"
+    return HttpResponse(message)
+
+def settings(request):
+    """ensures the display of the login page
+    as well as the authentication
+    procedure of the user
+    """
+    message = "You asked for the settings page"
     return HttpResponse(message)
