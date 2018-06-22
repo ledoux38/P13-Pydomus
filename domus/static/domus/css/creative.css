@@ -1,0 +1,11 @@
+
+nav > a > img
+{
+  width: 30px;
+  height: 30px;
+}
+
+nav > a > strong
+{
+  color: #6c757d;
+}
