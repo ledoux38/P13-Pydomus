@@ -32,7 +32,7 @@ nav > a > strong
   text-align: center;
 }
 
-.form-group > input
+.login > div > div > div > span >.form-group > input
 {
   margin-bottom: 20px;
 }
@@ -45,7 +45,7 @@ nav > a > strong
   margin-bottom: 20px;
 }
 
-.form-group
+.login > div > div > div > span >.form-group
 {
   background-color: white;
   padding: 10px;
