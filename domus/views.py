@@ -6,15 +6,13 @@ from django.http import HttpResponse
 
 def index(request):
     """ensures the display of the home page"""
-    message = "You asked for the index page"
-    return HttpResponse(message)
+    return render(request, 'domus/index.html')
 
 def login(request):
     """ensures the display of the login page
     as well as the authentication
     procedure of the user
     """
-    message = "You asked for the login page"
     return render(request, 'domus/login.html')
 
 def settings(request):

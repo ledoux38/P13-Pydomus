@@ -1,0 +1,84 @@
+{% extends 'domus/base_generic.html' %}
+{% load static %}
+{% block content %}
+{% include 'domus/nav_bar.html' %}
+<div class="container-fluid index">
+  <div class="row">
+    <!--Img-->
+    <div class="col-sm-6">
+      <span>
+        <img src="{% static 'domus/img/etablissement.png' %}" alt="", class="img-fluid">
+      </span>
+    </div>
+    <!--parameters-->
+    <div class="col-sm-6 parameters border border-dark rounded">
+      <div class="row">
+        <form class="form-horizontal">
+
+          <div class="row cuisine border border-dark rounded">
+            <div class="form-group">
+              <label for="text" class="control-label">luminaires:</label>
+              <div class="row">
+                <button type="button" class="btn btn-primary">on / off</button>
+                <button type="button" class="btn btn-primary">on / off</button>
+              </div>
+              <label for="text" class="control-label">Prises:</label>
+              <div class="row">
+                <button type="button" class="btn btn-primary">on / off</button>
+                <button type="button" class="btn btn-primary">on / off</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="row salon border border-dark rounded">
+            <div class="form-group">
+              <label for="text" class="control-label">luminaires:</label>
+              <div class="row">
+                <button type="button" class="btn btn-primary">on / off</button>
+                <button type="button" class="btn btn-primary">on / off</button>
+              </div>
+              <label for="text" class="control-label">Prises:</label>
+              <div class="row">
+                <button type="button" class="btn btn-primary">on / off</button>
+                <button type="button" class="btn btn-primary">on / off</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="row chambre border border-dark rounded">
+            <div class="form-group">
+              <label for="text" class="control-label">luminaires:</label>
+              <div class="row">
+                <button type="button" class="btn btn-primary">on / off</button>
+                <button type="button" class="btn btn-primary">on / off</button>
+              </div>
+              <label for="text" class="control-label">Prises:</label>
+              <div class="row">
+                <button type="button" class="btn btn-primary">on / off</button>
+                <button type="button" class="btn btn-primary">on / off</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="row sdb border border-dark rounded">
+            <div class="form-group">
+              <label for="text" class="control-label">luminaires:</label>
+              <div class="row">
+                <button type="button" class="btn btn-primary">on / off</button>
+                <button type="button" class="btn btn-primary">on / off</button>
+              </div>
+              <label for="text" class="control-label">Prises:</label>
+              <div class="row">
+                <button type="button" class="btn btn-primary">on / off</button>
+                <button type="button" class="btn btn-primary">on / off</button>
+              </div>
+            </div>
+          </div>
+
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+{% include 'domus/footer.html' %}
+{% endblock %}
