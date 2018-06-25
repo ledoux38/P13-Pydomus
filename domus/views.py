@@ -15,7 +15,7 @@ def login(request):
     procedure of the user
     """
     message = "You asked for the login page"
-    return HttpResponse(message)
+    return render(request, 'domus/login.html')
 
 def settings(request):
     """ensures the display of the login page

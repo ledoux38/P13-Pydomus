@@ -1,3 +1,18 @@
+.row
+{
+  margin: 0px;
+}
+
+html
+{
+    position: relative;
+    min-height: 100%;
+}
+
+body
+{
+  background-color: #d8d8d8;
+}
 
 nav > a > img
 {
@@ -7,5 +22,64 @@ nav > a > img
 
 nav > a > strong
 {
-  color: #6c757d;
+  color: white;
+  font-family:"Open Sans", sans-serif;
+}
+
+.login > .row
+{
+  margin-top: 15%;
+  text-align: center;
+}
+
+.form-group > input
+{
+  margin-bottom: 20px;
+}
+
+/* img */
+.login > div > div > div > span
+{
+  width: 100%;
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.form-group
+{
+  background-color: white;
+  padding: 10px;
+  border-width: 1px;
+  border-radius: 10px;
+}
+
+.footer
+{
+    position: absolute;
+    bottom: 0;
+    height: 100px;
+    background-color: #4064ab;
+
+}
+
+.footer > .row
+{
+  height: 100%;
+
+}
+
+.footer > .row > div[class*="col"]
+{
+  margin-top: auto;
+  margin-bottom: auto;
+}
+
+.footer > .row > div[class*="col"] > p > a
+{
+  color:#98acce;
+}
+
+.footer > .row > div[class*="col"] > p > a:hover
+{
+  color:#bbcce8;
 }

@@ -1,0 +1,28 @@
+{% extends 'domus/base_generic.html' %}
+{% load static %}
+{% block content %}
+{% include 'domus/nav_bar.html' %}
+<div class="container-fluid login">
+  <div class="row">
+    <div class="col-sm-3">  </div>
+    <div class="col-sm-6">
+      <div class="row">
+        <span><img src="{% static 'domus/img/logo_entreprise.png' %}" alt=""></span>
+      </div>
+      <div class="row">
+        <span>
+          <form class="form-group">
+            <input type="email" id="inputEmail" class="form-control" placeholder="Email address" required autofocus>
+            <input type="password" id="inputPassword" class="form-control" placeholder="Password" required>
+            <button class="btn btn-lg btn-primary btn-block" type="submit">Connexion</button>
+          </form>
+        </span>
+
+      </div>
+    </div>
+    <div class="col-sm-3">  </div>
+  </div>
+</div>
+
+{% include 'domus/footer.html' %}
+{% endblock %}
