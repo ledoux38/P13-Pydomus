@@ -1,24 +1,35 @@
 from django.test import TestCase
 from django.core.urlresolvers import reverse
-
+from django.contrib.auth.models import User
+import requests
 # homepage: it must return a status code 200
 class IndexTestCase(TestCase):
     """test page index"""
-    def test_index_page(self):
-        """referral code status test 200 from index page"""
-        response = self.client.get(reverse('index'))
-        self.assertEqual(response.status_code, 200)
 
-class LoginPageTestCase(TestCase):
-    """test page login """
+    def setUp(self):
+        user = User.objects.create_user('test', 'test@test.com', 'testpassword')
+
+    def tearDown(self):
+        pass
+
+    def test_index_page(self):
+        """the index.html page should be view only when the user and authenticated."""
+        response = self.client.get(reverse('index'))
+        self.assertEqual(response.status_code, 302)
+
     def test_login_page(self):
-        """referral code status test 200 from login page"""
+        """login.html page viewable without user authentication."""
         response = self.client.get(reverse('login'))
         self.assertEqual(response.status_code, 200)
 
     def test_login_user(self):
-        """descriptif text"""
-        pass
+        """test the display of the index window after authentication"""
+        # self.client.login(username='john', password='johnpassword')
+        # response = self.client.get(reverse('index'))
+        # self.assertEqual(response.status_code, 200)
+        response = self.client.post(
+            reverse('domus:login'),
+            {'name': 'test', 'password': 'testpassword'})
 
 class SettingsPageTestCase(TestCase):
     """test page setting """
