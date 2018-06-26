@@ -68,17 +68,17 @@ html, body
   margin-bottom: 20px;
 }
 
-.login > div > div > div > span >.form-group
+.form-connection
 {
   background-color: white;
-  padding: 10px;
-  border-width: 1px;
+  padding: 30px;
   border-radius: 10px;
 }
 
-
-
-
+.form-connection > form
+{
+  width: 100%;
+}
 
 .index
 {
