@@ -1,8 +1,11 @@
 {% extends 'domus/base_generic.html' %}
 {% load static %}
 {% block content %}
-{% include 'domus/nav_bar.html' %}
+
 <div class="container-fluid login">
+  <div class="row">
+    {% include 'domus/nav_bar.html' %}
+  </div>
   <div class="row">
     <div class="col-sm-3">  </div>
     <div class="col-sm-6">
@@ -22,7 +25,8 @@
     </div>
     <div class="col-sm-3">  </div>
   </div>
+  <div class="row footer">
+    {% include 'domus/footer.html' %}
+  </div>
 </div>
-
-{% include 'domus/footer.html' %}
 {% endblock %}

@@ -1,32 +1,55 @@
-.row
+.row .container-fluid
 {
   margin: 0px;
 }
 
-html
-{
-    position: relative;
-    min-height: 100%;
-}
-
-body
+html, body
 {
   background-color: #d8d8d8;
+  height: 100%
 }
 
-nav > a > img
+
+
+
+
+.navbar
+{
+  width: 100%;
+}
+
+.navbar > a > img
 {
   width: 30px;
   height: 30px;
 }
 
-nav > a > strong
+.navbar > a > strong
 {
   color: white;
   font-family:"Open Sans", sans-serif;
 }
 
+
+
+
+
+
+.login
+{
+  padding: 0px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: 100%;
+}
+
 .login > .row
+{
+  margin: 0px;
+}
+
+.login > .row > .row
 {
   margin-top: 1.5em;
   text-align: center;
@@ -52,10 +75,21 @@ nav > a > strong
   border-width: 1px;
   border-radius: 10px;
 }
+
+
+
+
+
+
 .index > .row
 {
   margin: 50px;
 }
+
+
+
+
+
 
 .parameters
 {
@@ -86,33 +120,37 @@ nav > a > strong
   border-color: black;
 }
 
+
+
+
+
 .footer
 {
-    position: absolute;
-    bottom: 0;
+    width: 100%;
     height: 100px;
     background-color: #4064ab;
+    margin: 0px;
 
 }
 
-.footer > .row
+.footer > div > .row
 {
   height: 100%;
 
 }
 
-.footer > .row > div[class*="col"]
+.footer > div > .row > div[class*="col"]
 {
   margin-top: auto;
   margin-bottom: auto;
 }
 
-.footer > .row > div[class*="col"] > p > a
+.footer > div > .row > div[class*="col"] > p > a
 {
   color:#98acce;
 }
 
-.footer > .row > div[class*="col"] > p > a:hover
+.footer > div > .row > div[class*="col"] > p > a:hover
 {
   color:#bbcce8;
 }
