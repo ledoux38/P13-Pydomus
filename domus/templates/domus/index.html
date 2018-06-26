@@ -1,9 +1,16 @@
 {% extends 'domus/base_generic.html' %}
 {% load static %}
 {% block content %}
-{% include 'domus/nav_bar.html' %}
+
 <div class="container-fluid index">
+
+  <!-- bar navigation -->
   <div class="row">
+    {% include 'domus/nav_bar.html' %}
+  </div>
+
+  <!-- index -->
+  <div class="row index-corp">
     <!--Img-->
     <div class="col-sm-6">
       <span>
@@ -79,6 +86,12 @@
       </div>
     </div>
   </div>
+
+  <!-- footer -->
+  <div class="row footer">
+    {% include 'domus/footer.html' %}
+  </div>
+
 </div>
-{% include 'domus/footer.html' %}
+
 {% endblock %}
