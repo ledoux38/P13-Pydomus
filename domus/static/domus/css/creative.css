@@ -177,3 +177,24 @@ html, body
 {
   color:#bbcce8;
 }
+
+
+
+
+.control-formular
+{
+  margin: auto;
+  padding: 30px;
+  background-color: white
+
+}
+
+
+.control
+{
+  padding: 0px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: 100%;
+}

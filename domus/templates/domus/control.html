@@ -1,0 +1,24 @@
+{% extends 'domus/base_generic.html' %}
+{% load static %}
+{% block content %}
+<div class="container-fluid control">
+  <div class="row">
+    {% include 'domus/nav_bar.html' %}
+  </div>
+  <div class="row">
+    <form class="form-inline control-formular border border-dark rounded" action="{% url 'domus:controlPage'%}" method="post">
+      {% csrf_token %}
+      <div class="form-group mb-2">
+        <button type="button" class="btn btn-primary">ON</button>
+        <button type="button" class="btn btn-light">OFF</button>
+      </div>
+      <div class="form-group mx-sm-3 mb-2">
+        <button type="submit" class="btn btn-primary mb-2">Confirmation</button>
+      </div>
+    </form>
+  </div>
+  <div class="row footer">
+    {% include 'domus/footer.html' %}
+  </div>
+</div>
+{% endblock %}

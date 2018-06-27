@@ -44,3 +44,11 @@ def settings(request):
     """
     message = "You asked for the settings page"
     return HttpResponse(message)
+
+def controlPage(request):
+    """the control page is a simple page
+     for sending commands to the microcontroller
+     and receiving information too."""
+    if request.method == 'POST':
+        return render(request, 'domus/control.html')
+    return render(request, 'domus/control.html')
