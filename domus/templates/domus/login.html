@@ -13,7 +13,7 @@
         <span><img src="{% static 'domus/img/logo_entreprise.png' %}" alt=""></span>
       </div>
       <div class="row form-connection border border-dark">
-        <form action="{% url 'domus:login'%}" method="post">
+        <form action="{% url 'domus:loginUser'%}" method="post">
            {% csrf_token %}
            <div class="form-group row">
              <label for="inputName" class="col-sm-2 col-form-label">Nom</label>

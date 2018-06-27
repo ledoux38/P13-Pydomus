@@ -15,7 +15,7 @@ def index(request):
     """ensures the display of the home page"""
     return render(request, 'domus/index.html')
 
-def login(request):
+def loginUser(request):
     """ensures the display of the login page
     as well as the authentication
     procedure of the user
@@ -24,19 +24,18 @@ def login(request):
     if request.method == 'POST':
         form = Login(request.POST)
         if form.is_valid():
-                    # Processing form data
-                    name = form.cleaned_data['name']
-                    password = form.cleaned_data['password']
-                    user = authenticate(username=name, password=password)
-                    #We check if the data is correct
-                    if user:
-                        login(request, user)
-                        return render(request, 'domus/index.html')
+            # Processing form data
+            name = form.cleaned_data['name']
+            password = form.cleaned_data['password']
+            user = authenticate(username=name, password=password)
+            #We check if the data is correct
+            if user is not None:
+                login(request, user)
+                return render(request, 'domus/index.html')
     # If the method is of type GET
-    else:
-        form = Login()
-        context = {"login": form}
-        return render(request, 'domus/login.html', context)
+    form = Login()
+    context = {"login": form}
+    return render(request, 'domus/login.html', context)
 
 def settings(request):
     """ensures the display of the login page

@@ -7,7 +7,7 @@ class IndexTestCase(TestCase):
     """test page index"""
 
     def setUp(self):
-        user = User.objects.create_user('test', 'test@test.com', 'testpassword')
+        self.user = User.objects.create_user('test', 'test@test.com', 'testpassword')
 
     def tearDown(self):
         pass
@@ -19,7 +19,7 @@ class IndexTestCase(TestCase):
 
     def test_login_page(self):
         """login.html page viewable without user authentication."""
-        response = self.client.get(reverse('login'))
+        response = self.client.get(reverse('loginUser'))
         self.assertEqual(response.status_code, 200)
 
     def test_login_user(self):
@@ -27,9 +27,11 @@ class IndexTestCase(TestCase):
         # self.client.login(username='john', password='johnpassword')
         # response = self.client.get(reverse('index'))
         # self.assertEqual(response.status_code, 200)
-        response = self.client.post(
-            reverse('domus:login'),
+        self.client.post(
+            reverse('domus:loginUser'),
             {'name': 'test', 'password': 'testpassword'})
+        response = self.client.get(reverse('index'))
+        self.assertEqual(response.status_code, 200)
 
 class SettingsPageTestCase(TestCase):
     """test page setting """
