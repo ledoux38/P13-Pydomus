@@ -9,11 +9,10 @@
     <form class="form-inline control-formular border border-dark rounded" action="{% url 'domus:controlPage'%}" method="post">
       {% csrf_token %}
       <div class="form-group mb-2">
-        <button type="button" class="btn btn-primary">ON</button>
-        <button type="button" class="btn btn-light">OFF</button>
+        <input type="text" name="valeur" class="form-control btn btn-light"></input>
       </div>
-      <div class="form-group mx-sm-3 mb-2">
-        <button type="submit" class="btn btn-primary mb-2">Confirmation</button>
+      <div class="form-group mx-sm-1 mb-2" id="submit">
+        <button type="submit" class="btn btn-primary">Confirmation</button>
       </div>
     </form>
   </div>

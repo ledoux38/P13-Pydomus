@@ -49,10 +49,15 @@ void loop()
     // si le client est connecté
     if(client.connected()) 
     {
+//      while (client.available()) { // tant qu'il a des infos à transmettre
+//        char c=client.read(); // on lit le caractère  
+//        Serial.write(c);// on l'écrit sur le moniteur série
+//        delay(1); //délai de lecture
+//        }
 
       //appel de la fonction de décodage
       String affichage = GET(client); 
-      
+      Serial.println(affichage);
       if(affichage == "5 : 0")
       {
           digitalWrite(led, LOW);
@@ -64,17 +69,20 @@ void loop()
     }
 
     //transmission d'une reponse au client.
-    client.println("<!DOCTYPE HTML>");
-    client.println("<html>");
-    client.println("<head>");
-    client.println("<meta charset='utf-8'>");
-    client.println("<title> Analogique </title>");
-    client.println("</head>");
-    client.println("<body>");
-    client.println("</body>");
-    client.println("</html>");
+//      client.println("<!DOCTYPE HTML>");
+//      client.println("<html>");
+//      client.println("<head>");
+//      client.println("<meta charset='utf-8'>");
+//      client.println("<title> Analogique </title>");
+//      client.println("</head>");
+//      client.println("<body>");
+//      client.println("<a href=?5=1>Envoi</a><br>");
+//      client.println("<a href=?5=0>Refresh</a><br>");
+//      client.println("<body>");
+//      client.println("</body>");
+//      client.println("</html>");
 
-    client.stop();
+//    client.stop();
     Serial.println("Fin de la communication avec le client");
   }
 

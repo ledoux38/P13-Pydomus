@@ -6,6 +6,8 @@ from django.db import transaction, IntegrityError
 from django.http import HttpResponse
 from django.contrib.auth import authenticate, login, logout
 
+import json
+import requests
 from .forms import Login
 
 # Create your views here.
@@ -50,5 +52,21 @@ def controlPage(request):
      for sending commands to the microcontroller
      and receiving information too."""
     if request.method == 'POST':
+        valeur = request.POST.get('valeur')
+        valeur = int(valeur)
+        print(type(valeur))
+        if valeur == 0:
+            r = requests.get('http://192.168.1.22?5=0')
+            return render(request, 'domus/control.html')
+        elif valeur == 1:
+            r = requests.get('http://192.168.1.22?5=1')
+            return render(request, 'domus/control.html')
+        else:
+            return render(request, 'domus/control.html')
+
+
+    else:
+        # r = requests.get('http://192.168.1.22')
+        # value = json.loads(r.text)
+        # print(value)
         return render(request, 'domus/control.html')
-    return render(request, 'domus/control.html')
