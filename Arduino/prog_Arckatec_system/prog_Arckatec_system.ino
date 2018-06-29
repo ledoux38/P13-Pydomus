@@ -1,123 +1,185 @@
+///////////////////////////////////////////////////////
+// this program must be transferred to an Arduino
+// card equipped with an Ethernet shield or
+// integrated into the card.
+//
+// COMPONENTS:
+// https://store.arduino.cc/arduino-uno-rev3
+// https://store.arduino.cc/arduino-ethernet-shield-2
+//
+// WARNING:
+// install the Ethernet2 library
+// https://www.arduino.cc/en/Reference/Ethernet
+//
+// install the ArduinoJson library
+// https://arduinojson.org/
+//
+// The program is in version V1.1
+//
+///////////////////////////////////////////////////////
+
 
 #include <ArduinoJson.h>
-#include <SPI.h> //bibliotheque pour SPI
-#include <SD.h> //bibliotheque pour carte SD
-#include <Ethernet2.h> //bibliothèque pour Ethernet
+#include <Ethernet2.h>
+#include <SPI.h>
+
+//Adress IP
+byte ip[] = {192, 168, 1, 22};
+// Adress MAC
+byte mac[] = {0x90, 0xA2, 0xDA, 0x11, 0x23, 0xCF};
 
 
-byte mac[] = {0x90, 0xA2, 0xDA, 0x11, 0x23, 0xCF}; // Adresse MAC
-byte ip[] = {192, 168, 1, 22}; //Adresse IP
-EthernetServer serveur(80);
+EthernetServer server(80);
 
-//affication des GPIO
-int led = 5;
+void setup() {
+
+  pinMode(7, OUTPUT);
+  digitalWrite(7, LOW);
 
 
-void setup() 
-{
-  //initialisation de communication série
-  Serial.begin (9600); 
+  // serial port initialization
+  Serial.begin(9600);
+  while (!Serial) continue;
 
-  // initiailisation des pins
-  pinMode(led, OUTPUT);
-  digitalWrite(led, LOW);
+  // Initialize Ethernet libary
+  Ethernet.begin(mac, ip);
 
-  // test et démarrage connexion carte SD
-  if (!SD.begin(4)) 
-  { 
-    Serial.println("Pb avec la carte");
-    return;
-  };
+  // Start to listen
+  server.begin();
 
-  //initialisation de la communication Ethernet
-  Ethernet.begin (mac, ip); 
-  Serial.print("\nLe serveur est sur l'adresse : ");
-  Serial.println(Ethernet.localIP()); 
-  serveur.begin();
+  Serial.println(F("Server is ready."));
+  Serial.print(F("Please connect to http://"));
+  Serial.println(Ethernet.localIP());
 }
 
-void loop() 
-{
-  //Attendre la connection sur le port défini
-  EthernetClient client = serveur.available();
+void loop() {
+  // Wait for an incomming connection
+  EthernetClient client = server.available();
 
-  //si un client se connecte
-  if(client) 
+  // If no client connects I start again at the beginning of the loop
+  if (!client) return;
+
+
+  ///////////////////////////////////////////////////////////////////
+  // DECODING VARIABLES GET URL
+  ///////////////////////////////////////////////////////////////////
+
+  // decoding steps
+  int lecture = 0;
+  // initialize the response string
+  String resultat = "";
+  // string to store the reading of the data
+  String donnee = "";
+
+  // read loop of the data
+  while (client.available())
   {
-    Serial.println("connection d'un client");
+    // reading a character
+    char c = client.read();
 
-    // si le client est connecté
-    if(client.connected()) 
+    // start reading name data
+    if (lecture == 0 && c == '?')
     {
-//      while (client.available()) { // tant qu'il a des infos à transmettre
-//        char c=client.read(); // on lit le caractère  
-//        Serial.write(c);// on l'écrit sur le moniteur série
-//        delay(1); //délai de lecture
-//        }
-
-      //appel de la fonction de décodage
-      String affichage = GET(client); 
-      Serial.println(affichage);
-      if(affichage == "5 : 0")
-      {
-          digitalWrite(led, LOW);
-      }
-      if(affichage == "5 : 1")
-      {
-          digitalWrite(led, HIGH);
-      }
-    }
-
-    //transmission d'une reponse au client.
-//      client.println("<!DOCTYPE HTML>");
-//      client.println("<html>");
-//      client.println("<head>");
-//      client.println("<meta charset='utf-8'>");
-//      client.println("<title> Analogique </title>");
-//      client.println("</head>");
-//      client.println("<body>");
-//      client.println("<a href=?5=1>Envoi</a><br>");
-//      client.println("<a href=?5=0>Refresh</a><br>");
-//      client.println("<body>");
-//      client.println("</body>");
-//      client.println("</html>");
-
-//    client.stop();
-    Serial.println("Fin de la communication avec le client");
-  }
-
-}
-
-//fonctin décodage GET
-String GET(EthernetClient cl) {
-  int lecture = 0; //étapes de décodage
-  String resultat = ""; //initialisation de la chaine de réponse
-  String donnee = ""; //chaine pour stocker la lecture des données
-  while (cl.available()) { // tant qu'il a des infos à transmettre
-    char c = cl.read(); // on lit le caractère
-    if (lecture == 0 && c == '?') { //début de lecture des données donc d'un nom
       lecture = 1;
       donnee = "";
     }
-    else if (lecture == 1 && c == '=') { //début de lecture d'une valeur
+
+    // start reading a value
+    else if (lecture == 1 && c == '=')
+    {
       lecture = 2;
-      resultat += donnee + " : "; //on construit la chaîne de réponse
+      resultat += donnee + " : ";
       donnee = "";
     }
-    else if (lecture == 2 && c == '&') { //nouveau nom
+
+    // new variables
+    else if (lecture == 2 && c == '&')
+    {
       lecture = 1;
-      resultat += donnee; //on construit la chaîne de réponse
+      // build the response string
+      resultat += donnee;
       donnee = "";
     }
-    else if ((lecture == 2 || lecture == 1) && c == ' ') { //fin de lecture
+
+    // end of reading
+    else if ((lecture == 2 || lecture == 1) && c == ' ')
+    {
       lecture = 3;
-      resultat += donnee; // on finit la chaîne réponse.
+      resultat += donnee;
     }
-    else if (lecture == 1 || lecture == 2) {//récupération des données de nom ou de valeur
+
+    // retrieve name or value data
+    else if (lecture == 1 || lecture == 2)
+    {
       donnee += c;
     }
-    delay(1); //delai de lecture
+    delay(1);
+
   }
-  return resultat; // retour le la chaîne de réponse
+
+
+  ///////////////////////////////////////////////////////////////////
+  // UPDATED I / O
+  ///////////////////////////////////////////////////////////////////
+
+  if(resultat == "7 : 0")
+  {
+      digitalWrite(7, LOW);
+  }
+  if(resultat == "7 : 1")
+  {
+      digitalWrite(7, HIGH);
+  }
+
+
+
+  ///////////////////////////////////////////////////////////////////
+  // PREPARING RESPONSE JSON
+  ///////////////////////////////////////////////////////////////////
+
+  // Allocate the JSON document
+  StaticJsonDocument<500> doc;
+
+  // Make our document represent an object
+  JsonObject& root = doc.to<JsonObject>();
+
+  // Create the "analog" array
+  JsonArray& analogValues = root.createNestedArray("analog");
+  for (int pin = 0; pin < 6; pin++) {
+    // Read the analog input
+    int value = analogRead(pin);
+
+    // Add the value at the end of the array
+    analogValues.add(value);
+  }
+
+  // Create the "digital" array
+  JsonArray& digitalValues = root.createNestedArray("digital");
+  for (int pin = 0; pin < 14; pin++) {
+    // Read the digital input
+    int value = digitalRead(pin);
+
+    // Add the value at the end of the array
+    digitalValues.add(value);
+  }
+
+  ////////////////////////////////////////////////////////////////
+  // SEND THE JSON FILE TO THE CLIENT
+  ////////////////////////////////////////////////////////////////
+
+  // Write response headers
+  client.println("HTTP/1.0 200 OK");
+  client.println("Content-Type: application/json");
+  client.println("Connection: close");
+  client.println();
+
+  // Write JSON document
+  serializeJsonPretty(root, client);
+
+  // Disconnect
+  client.stop();
 }
 
+// See also
+//  https://arduinojson.org/
+//  https://www.arduino.cc/en/Reference/Ethernet

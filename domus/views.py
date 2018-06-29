@@ -51,22 +51,19 @@ def controlPage(request):
     """the control page is a simple page
      for sending commands to the microcontroller
      and receiving information too."""
+
+    r = {}
     if request.method == 'POST':
         valeur = request.POST.get('valeur')
         valeur = int(valeur)
-        print(type(valeur))
+
         if valeur == 0:
-            r = requests.get('http://192.168.1.22?5=0')
-            return render(request, 'domus/control.html')
-        elif valeur == 1:
-            r = requests.get('http://192.168.1.22?5=1')
-            return render(request, 'domus/control.html')
+            r = requests.get('http://192.168.1.22?7=0').json()
+            print(r)
         else:
-            return render(request, 'domus/control.html')
+            r = requests.get('http://192.168.1.22?7=1').json()
+            print(r)
 
-
-    else:
-        # r = requests.get('http://192.168.1.22')
-        # value = json.loads(r.text)
-        # print(value)
-        return render(request, 'domus/control.html')
+    r = requests.get('http://192.168.1.22').json()
+    context = {'valeur': r['digital'][7]}
+    return render(request, 'domus/control.html', context)
