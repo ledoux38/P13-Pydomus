@@ -1,53 +1,73 @@
 $(function()
+{
+    update();
+
+    function update()
     {
-        $('#ON').click
-        (
-          function ()
-          {
-            $.post("/domus/update/",{valeur: 1});
-          }
-        );
+      $.get("/domus/update/",
+      function(data)
+       {
 
-        $('#OFF').click
-        (
-          function ()
-          {
-            $.post("/domus/update/",{valeur: 0});
-          }
-        );
+         if(data.valeur)
+         {
+           console.log(data);
+           $('#voyant').css('background-color', 'green');
+           event.preventDefault();
+         }
+         else
+         {
+           console.log(data);
+           $('#voyant').css('background-color', 'red');
+           event.preventDefault();
+         }
+       });
+    }
 
-        $('#voyant').click
-        (
-          function ()
-          {
-            $.get("/domus/update/",
-            function(data)
-             {
+    setInterval(update, 1000);
 
-               if(data.valeur)
-               {
-                 console.log(data);
-                 $('#voyant').css('background-color', 'green');
-               }
-               else
-               {
-                 console.log(data);
-                 $('#voyant').css('background-color', 'red');
-               }
-               return false;
-             });
-          });
-
-        $("#input").change
-        (
-          function ()
-          {
-            var imput = $(this).val();
-            $.post("/domus/update/",{valeur: imput});
-          }
-        );
+    $('#ON').click
+    (
+      function ()
+      {
+        $.post("/domus/update/",{valeur: 1});
+        event.preventDefault();
       }
-  );
+    );
+
+    $('#OFF').click
+    (
+      function ()
+      {
+        $.post("/domus/update/",{valeur: 0});
+        event.preventDefault();
+      }
+    );
+
+
+    $('#voyant').click
+    (
+      function ()
+      {
+        $.get("/domus/update/",
+        function(data)
+         {
+
+           if(data.valeur)
+           {
+             console.log(data);
+             $('#voyant').css('background-color', 'green');
+             event.preventDefault();
+           }
+           else
+           {
+             console.log(data);
+             $('#voyant').css('background-color', 'red');
+             event.preventDefault();
+           }
+
+         });
+      });
+});
 
 
 
@@ -78,3 +98,4 @@ $(function()
         //     );
         //   }
         // );
+        //
