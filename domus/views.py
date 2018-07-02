@@ -53,44 +53,30 @@ def settings(request):
     message = "You asked for the settings page"
     return HttpResponse(message)
 
-@csrf_exempt
 def controlPage(request):
     """the control page is a simple page
      for sending commands to the microcontroller
      and receiving information too."""
-    r = {}
-    if request.method == 'POST':
-        valeur = request.POST.get('valeur')
-        valeur = int(valeur)
+    return render(request, 'domus/control.html')
 
+@csrf_exempt
+def update(request):
+    r = ""
+    context = {}
+    if request.method == 'POST':
+        valeur = request.POST.get('valeur', None)
+        valeur=int(valeur)
         if valeur == 0:
             r = requests.get('http://192.168.1.22?7=0').json()
             print(r)
         else:
             r = requests.get('http://192.168.1.22?7=1').json()
             print(r)
-
-    r = requests.get('http://192.168.1.22').json()
-    context = {'valeur': r['digital'][7]}
-    return render(request, 'domus/control.html', context)
-
-@csrf_exempt
-def update(request):
-    valeur = request.POST.get('valeur', None)
-    valeur=int(valeur)
-    print(type(valeur))
-    if valeur == 0:
-        r = requests.get('http://192.168.1.22?7=0').json()
-        print(r)
     else:
-        r = requests.get('http://192.168.1.22?7=1').json()
-        print(r)
-
-    # r = requests.get('http://192.168.1.22').json()
-
-    if int(r['digital'][7]) == 1:
-        context = {'valeur': True}
-    else:
-        context = {'valeur': False}
+        r = requests.get('http://192.168.1.22').json()
+        if int(r['digital'][7]) == 1:
+            context = {'valeur': True}
+        else:
+            context = {'valeur': False}
 
     return JsonResponse(context)

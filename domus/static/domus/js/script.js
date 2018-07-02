@@ -2,19 +2,41 @@ $(function()
     {
         $('#ON').click
         (
-          function()
+          function ()
           {
-            $.post("127.0.0.1:8000/control/?valeur=1");
+            $.post("/domus/update/",{valeur: 1});
           }
-        )
+        );
 
         $('#OFF').click
         (
-          function()
+          function ()
           {
-            $.post("127.0.0.1:8000/control/?valeur=0");
+            $.post("/domus/update/",{valeur: 0});
           }
-        )
+        );
+
+        $('#voyant').click
+        (
+          function ()
+          {
+            $.get("/domus/update/",
+            function(data)
+             {
+
+               if(data.valeur)
+               {
+                 console.log(data);
+                 $('#voyant').css('background-color', 'green');
+               }
+               else
+               {
+                 console.log(data);
+                 $('#voyant').css('background-color', 'red');
+               }
+               return false;
+             });
+          });
 
         $("#input").change
         (
@@ -24,9 +46,8 @@ $(function()
             $.post("/domus/update/",{valeur: imput});
           }
         );
-
-
-
+      }
+  );
 
 
 
@@ -57,5 +78,3 @@ $(function()
         //     );
         //   }
         // );
-    }
-);
