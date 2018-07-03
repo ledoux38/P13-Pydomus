@@ -11,22 +11,25 @@
 
   <!-- index -->
   <div class="row index-corp">
+
     <!--Img-->
     <div class="col-sm-6">
       <span>
         <img src="{% static 'domus/img/etablissement.png' %}" alt="", class="img-fluid">
       </span>
     </div>
+
     <!--parameters-->
     <div class="col-sm-6 parameters border border-dark rounded">
       <div class="row">
         <form class="form-horizontal">
 
           <!-- Main room -->
-          <label for="text" class="control-label label-group">Salon</label>
+          <label for="text" class="control-label label-group">Piece principale</label>
           <div class="row salon border border-dark rounded">
             <div class="form-group">
 
+              <!-- lighting -->
               <label for="text" class="control-label">luminaires:</label>
               <div class="row form-inline">
                 <button type="button" class="btn btn-primary">on</button>
@@ -39,19 +42,23 @@
                 </div>
               </div>
 
+              <!-- plug -->
               <label for="text" class="control-label">Prises:</label>
               <div class="row">
                 <button type="button" class="btn btn-primary">on</button>
                 <button type="button" class="btn btn-light">off</button>
               </div>
+
             </div>
           </div>
 
-          <!-- Salle de bain -->
+          <!-- Bathroom -->
           <label for="text" class="control-label label-group">Salle de bain</label>
           <div class="row sdb border border-dark rounded">
             <div class="form-group">
               <label for="text" class="control-label">luminaires:</label>
+
+              <!-- lighting -->
               <div class="row form-inline">
                 <button type="button" class="btn btn-primary">on</button>
                 <button type="button" class="btn btn-light">off</button>
@@ -60,28 +67,32 @@
                   <div class="input-group-append">
                     <span class="input-group-text" id="basic-addon2">%</span>
                   </div>
+                </div>
               </div>
-            </div>
 
-            <label for="text" class="control-label">Prises:</label>
-            <div class="row">
-              <button type="button" class="btn btn-primary">on</button>
-              <button type="button" class="btn btn-light">off</button>
-            </div>
+                <!-- plug -->
+                <label for="text" class="control-label">Prises:</label>
+                <div class="row">
+                  <button type="button" class="btn btn-primary">on</button>
+                  <button type="button" class="btn btn-light">off</button>
+                </div>
 
-            <label for="text" class="control-label">Chauffage:</label>
-            <div class="row form-inline">
-              <button type="button" class="btn btn-primary">on</button>
-              <button type="button" class="btn btn-light">off</button>
-                <div class="input-group">
-                  <input type="text" class="form-control" placeholder="20" aria-label="percentage" aria-describedby="basic-addon2">
-                  <div class="input-group-append">
-                    <span class="input-group-text" id="basic-addon2">°C</span>
+                <!-- heating -->
+                <label for="text" class="control-label">Chauffage:</label>
+                <div class="row form-inline">
+                  <button type="button" class="btn btn-primary">on</button>
+                  <button type="button" class="btn btn-light">off</button>
+                    <div class="input-group">
+                      <input type="text" class="form-control" placeholder="20" aria-label="percentage" aria-describedby="basic-addon2">
+                      <div class="input-group-append">
+                        <span class="input-group-text" id="basic-addon2">°C</span>
+                      </div>
                   </div>
-              </div>
+                </div>
             </div>
           </div>
-      </div>
+
+          <!-- Command -->
           <div class="row index-exec-group">
             <div class="col">
               <button type="button" class="btn btn-primary btn-lg btn-block">Mettre à jour</button>
@@ -90,10 +101,15 @@
               <button type="button" class="btn btn-danger btn-lg btn-lg btn-block">Tous désactiver</button>
             </div>
           </div>
-        </form>
 
+        </form>
+      </div>
     </div>
+
+  <!-- end-index -->
   </div>
+
+
 
   <!-- footer -->
   <div class="row footer">
@@ -101,5 +117,4 @@
   </div>
 
 </div>
-
 {% endblock %}
