@@ -14,93 +14,117 @@
 
     <!--Img-->
     <div class="col-sm-6">
-      <span>
         <img src="{% static 'domus/img/etablissement.png' %}" alt="", class="img-fluid">
-      </span>
     </div>
 
     <!--parameters-->
     <div class="col-sm-6 parameters border border-dark rounded">
       <div class="row">
-        <form class="form-horizontal">
+        <form class="form-horizontal form-parameters">
 
           <!-- Main room -->
-          <label for="text" class="control-label label-group">Piece principale</label>
-          <div class="row salon border border-dark rounded">
+          <label for="text" class="label-group descriptif-label">Piece principale</label>
+          <div class="row main-room border border-dark rounded">
             <div class="form-group">
 
               <!-- lighting -->
               <label for="text" class="control-label">luminaires:</label>
-              <div class="row form-inline">
-                <button type="button" class="btn btn-primary">on</button>
-                <button type="button" class="btn btn-light">off</button>
-                <div class="input-group">
-                  <input type="text" class="form-control" placeholder="100" aria-label="percentage" aria-describedby="basic-addon2">
-                  <div class="input-group-append">
-                    <span class="input-group-text" id="basic-addon2">%</span>
+              <div class="row">
+
+                <div class="col-sm-6">
+                  <button type="button" class="btn btn-primary">on</button>
+                  <button type="button" class="btn btn-light">off</button>
+                </div>
+
+                <div class="col-sm-6">
+                  <div class="input-group">
+                    <input type="text" class="form-control" placeholder="100" aria-label="percentage" aria-describedby="basic-addon2">
+                    <div class="input-group-append">
+                      <span class="input-group-text" id="basic-addon2">%</span>
+                    </div>
                   </div>
                 </div>
+
               </div>
 
               <!-- plug -->
               <label for="text" class="control-label">Prises:</label>
               <div class="row">
-                <button type="button" class="btn btn-primary">on</button>
-                <button type="button" class="btn btn-light">off</button>
+                <div class="col-sm-6">
+                  <button type="button" class="btn btn-primary">on</button>
+                  <button type="button" class="btn btn-light">off</button>
+                </div>
               </div>
 
             </div>
           </div>
 
           <!-- Bathroom -->
-          <label for="text" class="control-label label-group">Salle de bain</label>
+          <label for="text" class="label-group descriptif-label">Salle de bain</label>
           <div class="row sdb border border-dark rounded">
             <div class="form-group">
               <label for="text" class="control-label">luminaires:</label>
 
               <!-- lighting -->
-              <div class="row form-inline">
-                <button type="button" class="btn btn-primary">on</button>
-                <button type="button" class="btn btn-light">off</button>
-                <div class="input-group">
-                  <input type="text" class="form-control" placeholder="100" aria-label="percentage" aria-describedby="basic-addon2">
-                  <div class="input-group-append">
-                    <span class="input-group-text" id="basic-addon2">%</span>
+              <div class="row">
+
+                <div class="col-sm-6">
+                  <button type="button" class="btn btn-primary">on</button>
+                  <button type="button" class="btn btn-light">off</button>
+                </div>
+
+                <div class="col-sm-6">
+                  <div class="input-group">
+                    <input type="text" class="form-control" placeholder="100" aria-label="percentage" aria-describedby="basic-addon2">
+                    <div class="input-group-append">
+                      <span class="input-group-text" id="basic-addon2">%</span>
+                    </div>
                   </div>
                 </div>
+
               </div>
 
                 <!-- plug -->
                 <label for="text" class="control-label">Prises:</label>
                 <div class="row">
-                  <button type="button" class="btn btn-primary">on</button>
-                  <button type="button" class="btn btn-light">off</button>
+                  <div class="col-sm-6">
+                    <button type="button" class="btn btn-primary">on</button>
+                    <button type="button" class="btn btn-light">off</button>
+                  </div>
                 </div>
 
                 <!-- heating -->
                 <label for="text" class="control-label">Chauffage:</label>
-                <div class="row form-inline">
-                  <button type="button" class="btn btn-primary">on</button>
-                  <button type="button" class="btn btn-light">off</button>
+
+                <div class="row">
+                  <div class="col-sm-6">
+                    <button type="button" class="btn btn-primary">on</button>
+                    <button type="button" class="btn btn-light">off</button>
+                  </div>
+
+                  <div class="col-sm-6">
                     <div class="input-group">
                       <input type="text" class="form-control" placeholder="20" aria-label="percentage" aria-describedby="basic-addon2">
                       <div class="input-group-append">
                         <span class="input-group-text" id="basic-addon2">°C</span>
                       </div>
+                    </div>
                   </div>
+
                 </div>
             </div>
           </div>
 
           <!-- Command -->
-          <div class="row index-exec-group">
+
+          <!-- <div class="row index-exec-group">
             <div class="col">
               <button type="button" class="btn btn-primary btn-lg btn-block">Mettre à jour</button>
             </div>
             <div class="col">
               <button type="button" class="btn btn-danger btn-lg btn-lg btn-block">Tous désactiver</button>
             </div>
-          </div>
+          </div> -->
 
         </form>
       </div>
