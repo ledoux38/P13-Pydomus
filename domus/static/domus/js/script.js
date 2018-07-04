@@ -34,7 +34,7 @@ $(function()
     (
       function ()
       {
-        $.post("/domus/update/",{lumOnMain: 1});
+        $.post("/domus/update/",{3: 1});
         event.preventDefault();
       }
     );
@@ -43,7 +43,7 @@ $(function()
     (
       function ()
       {
-        $.post("/domus/update/",{lumOffMain: 0});
+        $.post("/domus/update/",{3: 0});
         event.preventDefault();
       }
     );
@@ -65,7 +65,7 @@ $(function()
     (
       function ()
       {
-        $.post("/domus/update/",{plugOnMain: 1});
+        $.post("/domus/update/",{2: 1});
         event.preventDefault();
       }
     );
@@ -74,7 +74,7 @@ $(function()
     (
       function ()
       {
-        $.post("/domus/update/",{plugOffMain: 0});
+        $.post("/domus/update/",{2: 0});
         event.preventDefault();
       }
     );
@@ -88,7 +88,7 @@ $(function()
     (
       function ()
       {
-        $.post("/domus/update/",{lumBath: 1});
+        $.post("/domus/update/",{5: 1});
         event.preventDefault();
       }
     );
@@ -97,7 +97,7 @@ $(function()
     (
       function ()
       {
-        $.post("/domus/update/",{lumBath: 0});
+        $.post("/domus/update/",{5: 0});
         event.preventDefault();
       }
     );
@@ -117,7 +117,7 @@ $(function()
     (
       function ()
       {
-        $.post("/domus/update/",{plugOnBath: 1});
+        $.post("/domus/update/",{6: 1});
         event.preventDefault();
       }
     );
@@ -126,26 +126,26 @@ $(function()
     (
       function ()
       {
-        $.post("/domus/update/",{plugOnBath: 0});
+        $.post("/domus/update/",{6: 0});
         event.preventDefault();
       }
     );
 
     // HEATING
-    $('#lumOnBath').click
+    $('#heatingOnBath').click
     (
       function ()
       {
-        $.post("/domus/update/",{lumOnBath: 1});
+        $.post("/domus/update/",{7: 1});
         event.preventDefault();
       }
     );
 
-    $('#lumOffBath').click
+    $('#heatingOffBath').click
     (
       function ()
       {
-        $.post("/domus/update/",{lumOffBath: 0});
+        $.post("/domus/update/",{7: 0});
         event.preventDefault();
       }
     );
@@ -162,55 +162,22 @@ $(function()
     );
 
 
-
-
-
-
-
-
-
-
     // CONTROL
-    $('#ON').click
-    (
-      function ()
-      {
-        $.post("/domus/update/",{valeur: 1});
-        event.preventDefault();
-      }
-    );
+    // $('#ON').click
+    // (
+    //   function ()
+    //   {
+    //     $.post("/domus/update/",{7: 1});
+    //     event.preventDefault();
+    //   }
+    // );
 
-    $('#OFF').click
-    (
-      function ()
-      {
-        $.post("/domus/update/",{valeur: 0});
-        event.preventDefault();
-      }
-    );
-
-
-    $('#voyant').click
-    (
-      function ()
-      {
-        $.get("/domus/update/",
-        function(data)
-         {
-
-           if(data.valeur)
-           {
-             console.log(data);
-             $('#voyant').css('background-color', 'green');
-             event.preventDefault();
-           }
-           else
-           {
-             console.log(data);
-             $('#voyant').css('background-color', 'red');
-             event.preventDefault();
-           }
-
-         });
-      });
+    // $('#OFF').click
+    // (
+    //   function ()
+    //   {
+    //     $.post("/domus/update/",{7: 0});
+    //     event.preventDefault();
+    //   }
+    // );
 });

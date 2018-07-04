@@ -61,17 +61,31 @@ def controlPage(request):
 
 @csrf_exempt
 def update(request):
+    #VARIABLES
+    url = "http://192.168.1.22"
     r = ""
     context = {}
+    list_keys = []
+
+
+    #IF REQUEST IS POST
     if request.method == 'POST':
-        valeur = request.POST.get('valeur', None)
-        valeur=int(valeur)
-        if valeur == 0:
-            r = requests.get('http://192.168.1.22?7=0').json()
-            print(r)
-        else:
-            r = requests.get('http://192.168.1.22?7=1').json()
-            print(r)
+
+        # recovery of the key of the request
+        # for preparation of the url towards
+        # the microcontroller
+
+        for cle in request.POST.keys():
+            list_keys.append(cle)
+
+        # preparing the URL
+
+        key = list_keys[0]
+        value = request.POST[list_keys[0]]
+        url_get = url + "?{}={}".format(key, value)
+        requests.get(url_get)
+
+    #ELSE REQUEST IS GET
     else:
         r = requests.get('http://192.168.1.22').json()
         if int(r['digital'][7]) == 1:
