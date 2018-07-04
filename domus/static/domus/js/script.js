@@ -30,50 +30,51 @@ $(function()
     // MAIN ROOM
     //////////////////////////////////////////////
     // LAMPS
-    $('#lum-on-main').click
+    $('#lumOnMain').click
     (
       function ()
       {
-        $.post("/domus/update/",{lum-main: 1});
+        $.post("/domus/update/",{lumOnMain: 1});
         event.preventDefault();
       }
     );
 
-    $('#lum-off-main').click
+    $('#lumOffMain').click
     (
       function ()
       {
-        $.post("/domus/update/",{lum-main: 0});
+        $.post("/domus/update/",{lumOffMain: 0});
         event.preventDefault();
       }
     );
 
-    $('#lum-percent-main').change
+    $('#lumPercentMain').change
     (
-      var message = $('#lum-percent-main').val();
+
       function ()
       {
-        $.post("/domus/update/",{lum-percent-main: message});
+        var message = $('#lumPercentMain').val();
+        $.post("/domus/update/",{lumPercentMain: message});
         event.preventDefault();
       }
     );
 
 
     // PLUG
-    $('#plug-on-main').click
+    $('#plugOnMain').click
     (
       function ()
       {
-        $.post("/domus/update/",{plug-main: 1});
+        $.post("/domus/update/",{plugOnMain: 1});
         event.preventDefault();
       }
     );
 
-    $('#plug-off-main').click
+    $('#plugOffMain').click
     (
       function ()
       {
-        $.post("/domus/update/",{plug-main: 0});
+        $.post("/domus/update/",{plugOffMain: 0});
         event.preventDefault();
       }
     );
@@ -83,78 +84,79 @@ $(function()
     // BATHROOM
     //////////////////////////////////////////////
     // LAMPS
-    $('#lum-on-bath').click
+    $('#lumOnBath').click
     (
       function ()
       {
-        $.post("/domus/update/",{lum-bath: 1});
+        $.post("/domus/update/",{lumBath: 1});
         event.preventDefault();
       }
     );
 
-    $('#lum-off-bath').click
+    $('#lumOffBath').click
     (
       function ()
       {
-        $.post("/domus/update/",{lum-bath: 0});
+        $.post("/domus/update/",{lumBath: 0});
         event.preventDefault();
       }
     );
 
-    $('#lum-percent-bath').change
+    $('#lumPercentBath').change
     (
-      var message = $('#lum-percent-bath').val();
       function ()
       {
-        $.post("/domus/update/",{lum-percent-bath: message});
+        var message = $('#lumPercentBath').val();
+        $.post("/domus/update/",{lumPercentBath: message});
         event.preventDefault();
       }
     );
 
     // PLUG
-    $('#plug-on-bath').click
+    $('#plugOnBath').click
     (
       function ()
       {
-        $.post("/domus/update/",{plug-bath: 1});
+        $.post("/domus/update/",{plugOnBath: 1});
         event.preventDefault();
       }
     );
 
-    $('#plug-off-bath').click
+    $('#plugOffBath').click
     (
       function ()
       {
-        $.post("/domus/update/",{plug-bath: 0});
+        $.post("/domus/update/",{plugOnBath: 0});
         event.preventDefault();
       }
     );
 
     // HEATING
-    $('#lum-on-bath').click
+    $('#lumOnBath').click
     (
       function ()
       {
-        $.post("/domus/update/",{lum-bath: 1});
+        $.post("/domus/update/",{lumOnBath: 1});
         event.preventDefault();
       }
     );
 
-    $('#lum-off-bath').click
+    $('#lumOffBath').click
     (
       function ()
       {
-        $.post("/domus/update/",{lum-bath: 0});
+        $.post("/domus/update/",{lumOffBath: 0});
         event.preventDefault();
       }
     );
 
-    $('#lum-percent-bath').change
+    $('#heatingPercentBath').change
     (
-      var message = $('#heating-percent-bath').val();
+
       function ()
       {
-        $.post("/domus/update/",{heating-percent-bath: message});
+        var message = $('#heatingPercentBath').val();
+        $.post("/domus/update/",{heatingPercentBath: message});
         event.preventDefault();
       }
     );
