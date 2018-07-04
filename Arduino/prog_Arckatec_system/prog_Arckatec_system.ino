@@ -33,9 +33,16 @@ EthernetServer server(80);
 
 void setup() {
 
+  pinMode(2, OUTPUT);
+  digitalWrite(2, LOW);
+  pinMode(3, OUTPUT);
+  digitalWrite(3, LOW);
+  pinMode(5, OUTPUT);
+  digitalWrite(5, LOW);
+  pinMode(6, OUTPUT);
+  digitalWrite(6, LOW);
   pinMode(7, OUTPUT);
   digitalWrite(7, LOW);
-
 
   // serial port initialization
   Serial.begin(9600);
@@ -121,6 +128,42 @@ void loop() {
   ///////////////////////////////////////////////////////////////////
   // UPDATED I / O
   ///////////////////////////////////////////////////////////////////
+
+  if(resultat == "2 : 0")
+  {
+      digitalWrite(2, LOW);
+  }
+  if(resultat == "2 : 1")
+  {
+      digitalWrite(2, HIGH);
+  }
+
+  if(resultat == "3 : 0")
+  {
+      digitalWrite(3, LOW);
+  }
+  if(resultat == "3 : 1")
+  {
+      digitalWrite(3, HIGH);
+  }
+
+  if(resultat == "5 : 0")
+  {
+      digitalWrite(5, LOW);
+  }
+  if(resultat == "5 : 1")
+  {
+      digitalWrite(5, HIGH);
+  }
+
+  if(resultat == "6 : 0")
+  {
+      digitalWrite(6, LOW);
+  }
+  if(resultat == "6 : 1")
+  {
+      digitalWrite(6, HIGH);
+  }
 
   if(resultat == "7 : 0")
   {
