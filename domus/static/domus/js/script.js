@@ -25,6 +25,150 @@ $(function()
 
     setInterval(update, 5000);
 
+
+    //////////////////////////////////////////////
+    // MAIN ROOM
+    //////////////////////////////////////////////
+    // LAMPS
+    $('#lum-on-main').click
+    (
+      function ()
+      {
+        $.post("/domus/update/",{lum-main: 1});
+        event.preventDefault();
+      }
+    );
+
+    $('#lum-off-main').click
+    (
+      function ()
+      {
+        $.post("/domus/update/",{lum-main: 0});
+        event.preventDefault();
+      }
+    );
+
+    $('#lum-percent-main').change
+    (
+      var message = $('#lum-percent-main').val();
+      function ()
+      {
+        $.post("/domus/update/",{lum-percent-main: message});
+        event.preventDefault();
+      }
+    );
+
+
+    // PLUG
+    $('#plug-on-main').click
+    (
+      function ()
+      {
+        $.post("/domus/update/",{plug-main: 1});
+        event.preventDefault();
+      }
+    );
+
+    $('#plug-off-main').click
+    (
+      function ()
+      {
+        $.post("/domus/update/",{plug-main: 0});
+        event.preventDefault();
+      }
+    );
+
+
+    //////////////////////////////////////////////
+    // BATHROOM
+    //////////////////////////////////////////////
+    // LAMPS
+    $('#lum-on-bath').click
+    (
+      function ()
+      {
+        $.post("/domus/update/",{lum-bath: 1});
+        event.preventDefault();
+      }
+    );
+
+    $('#lum-off-bath').click
+    (
+      function ()
+      {
+        $.post("/domus/update/",{lum-bath: 0});
+        event.preventDefault();
+      }
+    );
+
+    $('#lum-percent-bath').change
+    (
+      var message = $('#lum-percent-bath').val();
+      function ()
+      {
+        $.post("/domus/update/",{lum-percent-bath: message});
+        event.preventDefault();
+      }
+    );
+
+    // PLUG
+    $('#plug-on-bath').click
+    (
+      function ()
+      {
+        $.post("/domus/update/",{plug-bath: 1});
+        event.preventDefault();
+      }
+    );
+
+    $('#plug-off-bath').click
+    (
+      function ()
+      {
+        $.post("/domus/update/",{plug-bath: 0});
+        event.preventDefault();
+      }
+    );
+
+    // HEATING
+    $('#lum-on-bath').click
+    (
+      function ()
+      {
+        $.post("/domus/update/",{lum-bath: 1});
+        event.preventDefault();
+      }
+    );
+
+    $('#lum-off-bath').click
+    (
+      function ()
+      {
+        $.post("/domus/update/",{lum-bath: 0});
+        event.preventDefault();
+      }
+    );
+
+    $('#lum-percent-bath').change
+    (
+      var message = $('#heating-percent-bath').val();
+      function ()
+      {
+        $.post("/domus/update/",{heating-percent-bath: message});
+        event.preventDefault();
+      }
+    );
+
+
+
+
+
+
+
+
+
+
+    // CONTROL
     $('#ON').click
     (
       function ()
@@ -68,34 +212,3 @@ $(function()
          });
       });
 });
-
-
-
-
-        // $("#input").change
-        // (
-        //   function ()
-        //   {
-        //     var imput = $(this).val();
-        //     $.ajax
-        //     (
-        //       {
-        //         url: '/domus/update/',
-        //         context: {'valeur': imput},
-        //         dataType: 'json',
-        //         success: function (context)
-        //         {
-        //           if (context.valeur)
-        //           {
-        //             console.log("OK");
-        //           }
-        //           else
-        //           {
-        //             console.log("NON");
-        //           }
-        //         }
-        //       }
-        //     );
-        //   }
-        // );
-        //
