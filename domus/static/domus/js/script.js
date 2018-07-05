@@ -34,7 +34,7 @@ $(function()
     (
       function ()
       {
-        $.post("/domus/update/",{3: 1});
+        $.post("/domus/update/",{9: 1});
         event.preventDefault();
       }
     );
@@ -43,18 +43,17 @@ $(function()
     (
       function ()
       {
-        $.post("/domus/update/",{3: 0});
+        $.post("/domus/update/",{9: 0});
         event.preventDefault();
       }
     );
 
     $('#lumPercentMain').change
     (
-
       function ()
       {
         var message = $('#lumPercentMain').val();
-        $.post("/domus/update/",{lumPercentMain: message});
+        $.post("/domus/update/",{100: message});
         event.preventDefault();
       }
     );
@@ -65,7 +64,7 @@ $(function()
     (
       function ()
       {
-        $.post("/domus/update/",{2: 1});
+        $.post("/domus/update/",{8: 1});
         event.preventDefault();
       }
     );
@@ -74,7 +73,7 @@ $(function()
     (
       function ()
       {
-        $.post("/domus/update/",{2: 0});
+        $.post("/domus/update/",{8: 0});
         event.preventDefault();
       }
     );
@@ -107,7 +106,7 @@ $(function()
       function ()
       {
         var message = $('#lumPercentBath').val();
-        $.post("/domus/update/",{lumPercentBath: message});
+        $.post("/domus/update/",{110: message});
         event.preventDefault();
       }
     );
@@ -156,12 +155,19 @@ $(function()
       function ()
       {
         var message = $('#heatingPercentBath').val();
-        $.post("/domus/update/",{heatingPercentBath: message});
+        $.post("/domus/update/",{120: message});
         event.preventDefault();
       }
     );
 
-
+    $('#deactivate_all').click
+    (
+      function ()
+      {
+        $.post("/domus/update/",{130: 0});
+        event.preventDefault();
+      }
+    );
     // CONTROL
     // $('#ON').click
     // (
