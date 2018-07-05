@@ -18,10 +18,21 @@
 //
 ///////////////////////////////////////////////////////
 
-
+///////////////////////////////////////////////////////////////////
+// INCLUDES
+///////////////////////////////////////////////////////////////////
 #include <ArduinoJson.h>
 #include <Ethernet2.h>
 #include <SPI.h>
+
+///////////////////////////////////////////////////////////////////
+// FUNCTIONS
+///////////////////////////////////////////////////////////////////
+
+//the url_item_recovery function retrieves the parameters of the url
+String url_item_recovery(const EthernetClient& cl);
+
+boolean url_parameters_recovery(String value_p, int& return_p, int& return_v, char del=":");
 
 //Adress IP
 byte ip[] = {192, 168, 1, 22};
@@ -71,105 +82,53 @@ void loop() {
   // DECODING VARIABLES GET URL
   ///////////////////////////////////////////////////////////////////
 
-  // decoding steps
-  int lecture = 0;
-  // initialize the response string
-  String resultat = "";
-  // string to store the reading of the data
-  String donnee = "";
-
-  // read loop of the data
-  while (client.available())
-  {
-    // reading a character
-    char c = client.read();
-
-    // start reading name data
-    if (lecture == 0 && c == '?')
-    {
-      lecture = 1;
-      donnee = "";
-    }
-
-    // start reading a value
-    else if (lecture == 1 && c == '=')
-    {
-      lecture = 2;
-      resultat += donnee + " : ";
-      donnee = "";
-    }
-
-    // new variables
-    else if (lecture == 2 && c == '&')
-    {
-      lecture = 1;
-      // build the response string
-      resultat += donnee;
-      donnee = "";
-    }
-
-    // end of reading
-    else if ((lecture == 2 || lecture == 1) && c == ' ')
-    {
-      lecture = 3;
-      resultat += donnee;
-    }
-
-    // retrieve name or value data
-    else if (lecture == 1 || lecture == 2)
-    {
-      donnee += c;
-    }
-    delay(1);
-
-  }
-
+  String resultat = url_item_recovery(client);
 
   ///////////////////////////////////////////////////////////////////
   // UPDATED I / O
   ///////////////////////////////////////////////////////////////////
 
-  if(resultat == "2 : 0")
+  if(resultat == "2:0")
   {
       digitalWrite(2, LOW);
   }
-  if(resultat == "2 : 1")
+  if(resultat == "2:1")
   {
       digitalWrite(2, HIGH);
   }
 
-  if(resultat == "3 : 0")
+  if(resultat == "3:0")
   {
       digitalWrite(3, LOW);
   }
-  if(resultat == "3 : 1")
+  if(resultat == "3:1")
   {
       digitalWrite(3, HIGH);
   }
 
-  if(resultat == "5 : 0")
+  if(resultat == "5:0")
   {
       digitalWrite(5, LOW);
   }
-  if(resultat == "5 : 1")
+  if(resultat == "5:1")
   {
       digitalWrite(5, HIGH);
   }
 
-  if(resultat == "6 : 0")
+  if(resultat == "6:0")
   {
       digitalWrite(6, LOW);
   }
-  if(resultat == "6 : 1")
+  if(resultat == "6:1")
   {
       digitalWrite(6, HIGH);
   }
 
-  if(resultat == "7 : 0")
+  if(resultat == "7:0")
   {
       digitalWrite(7, LOW);
   }
-  if(resultat == "7 : 1")
+  if(resultat == "7:1")
   {
       digitalWrite(7, HIGH);
   }
@@ -221,6 +180,113 @@ void loop() {
 
   // Disconnect
   client.stop();
+}
+
+
+
+
+
+
+
+
+
+
+String url_item_recovery(const EthernetClient& cl)
+{
+  // DECODING VARIABLES GET URL
+  
+  // decoding steps
+  int lecture = 0;
+  // initialize the response string
+  String resultat = "";
+  // string to store the reading of the data
+  String donnee = "";
+
+  // read loop of the data
+  while (cl.available())
+  {
+    // reading a character
+    char c = cl.read();
+
+    // start reading name data
+    if (lecture == 0 && c == '?')
+    {
+      lecture = 1;
+      donnee = "";
+    }
+
+    // start reading a value
+    else if (lecture == 1 && c == '=')
+    {
+      lecture = 2;
+      resultat += donnee + ":";
+      donnee = "";
+    }
+
+    // new variables
+    else if (lecture == 2 && c == '&')
+    {
+      lecture = 1;
+      // build the response string
+      resultat += donnee;
+      donnee = "";
+    }
+
+    // end of reading
+    else if ((lecture == 2 || lecture == 1) && c == ' ')
+    {
+      lecture = 3;
+      resultat += donnee;
+    }
+
+    // retrieve name or value data
+    else if (lecture == 1 || lecture == 2)
+    {
+      donnee += c;
+    }
+    delay(1);
+  }
+  return resultat;
+}
+
+boolean url_parameters_recovery(String value_p, int& return_p, int& return_v, char del)
+{
+  String v = "";
+  String p = "";
+  
+  for(int i=0; i<=value_p.length(); i++)
+  {
+    // manages the switch between the parameter and the value
+    boolean toggle = false;
+
+    // if the value is not equal to the delimiter
+    // i recover the values
+    if(!value_p[i]==del)
+    {
+      // if toggle equal to false i consider 
+      // that i am still in the scan of the parameter.
+      if(!toggle)
+      {
+        p += value_p[i];
+      }
+      else
+      {
+        v += value_p[i];
+      }
+      
+    }
+
+    // otherwise I consider that the parameter scanning is finished and 
+    // I start the scanning of the values passing the toggle variable to true.
+    else
+    {
+      toggle = true;
+    }
+  }
+  
+  return_p = p.toInt();
+  return_v = v.toInt();
+  
 }
 
 // See also
