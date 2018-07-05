@@ -18,12 +18,35 @@
 //
 ///////////////////////////////////////////////////////
 
+
+
+
+
+
 ///////////////////////////////////////////////////////////////////
 // INCLUDES
 ///////////////////////////////////////////////////////////////////
 #include <ArduinoJson.h>
 #include <Ethernet2.h>
 #include <SPI.h>
+
+
+
+
+
+///////////////////////////////////////////////////////////////////
+// DEFINES
+///////////////////////////////////////////////////////////////////
+#define MINI_PIN  5
+#define MAXI_PIN  9
+
+#define MINI_LIGHTING  0
+#define MAXI_LIGHTING  100
+
+#define MINI_HEATING  0
+#define MAXI_HEATING  30
+
+
 
 ///////////////////////////////////////////////////////////////////
 // FUNCTIONS
@@ -32,28 +55,44 @@
 //the url_item_recovery function retrieves the parameters of the url
 String url_item_recovery(const EthernetClient& cl);
 
+// the function cuts the parameter and returns the parameter and value by reference
 void url_parameters_recovery(const String&, int& return_p, int& return_v, char del=':');
 
+void output_piloted_pwm(const int& param, const int& value, const int& fixture);
+
+void output_piloted(const int& param, const int& value, const int& fixture, const int& value_sensor);
+
+///////////////////////////////////////////////////////////////////
+// GLOBAL VARIABLES
+///////////////////////////////////////////////////////////////////
 //Adress IP
 byte ip[] = {192, 168, 1, 22};
 // Adress MAC
 byte mac[] = {0x90, 0xA2, 0xDA, 0x11, 0x23, 0xCF};
 
-
 EthernetServer server(80);
 
-void setup() {
+int LIGHTING_FIXTURE_MAIN = 100;
+int LIGHTING_FIXTURE_HEATING = 100;
+int HEATING_FIXTURE = 20;
 
-  pinMode(2, OUTPUT);
-  digitalWrite(2, LOW);
-  pinMode(3, OUTPUT);
-  digitalWrite(3, LOW);
-  pinMode(5, OUTPUT);
-  digitalWrite(5, LOW);
-  pinMode(6, OUTPUT);
-  digitalWrite(6, LOW);
-  pinMode(7, OUTPUT);
-  digitalWrite(7, LOW);
+
+
+
+
+///////////////////////////////////////////////////////////////////
+// SETUP
+///////////////////////////////////////////////////////////////////
+
+void setup()
+{
+
+  //  initialization of I / O variables
+  for( int index = MINI_PIN; index <= MAXI_PIN; index ++)
+  {
+    pinMode(index, OUTPUT);
+    digitalWrite(index, LOW);
+  }
 
   // serial port initialization
   Serial.begin(9600);
@@ -70,6 +109,13 @@ void setup() {
   Serial.println(Ethernet.localIP());
 }
 
+
+
+
+
+///////////////////////////////////////////////////////////////////
+// LOOP
+///////////////////////////////////////////////////////////////////
 void loop() {
   // Wait for an incomming connection
   EthernetClient client = server.available();
@@ -77,9 +123,8 @@ void loop() {
   // If no client connects I start again at the beginning of the loop
   if (!client) return;
 
-  ///////////////////////////////////////////////////////////////////
+
   // DECODING VARIABLES GET URL
-  ///////////////////////////////////////////////////////////////////
   String result = url_item_recovery(client);
 
   if(result.length() != 0)
@@ -87,22 +132,84 @@ void loop() {
       int param;
       int val;
       url_parameters_recovery(result, param, val);
-      
-      ///////////////////////////////////////////////////////////////////
+      Serial.println(param);
+      Serial.println(val);
       // UPDATED I / O
-      ///////////////////////////////////////////////////////////////////
-      digitalWrite(param, val);
-  }
+        switch(param)
+        {
+          // lighting bath on/off
+          case 5:
+            digitalWrite(param, val);
+            break;
+
+          // plug bath on/off
+          case 6:
+            digitalWrite(param, val);
+            break;
+
+          // heating bath on/off
+          case 7:
+            output_piloted(param, val, HEATING_FIXTURE, 30 );
+            break;
+
+          // plug main on/off
+          case 8:
+            digitalWrite(param, val);
+            break;
+
+          // lighting main on/off
+          case 9:
+            digitalWrite(param, val);
+            break;
+
+          // update fixture lighting main
+          case 100:
+            if(val < MINI_LIGHTING || val > MAXI_LIGHTING)
+            {
+               LIGHTING_FIXTURE_MAIN = MAXI_LIGHTING;
+            }
+            else
+            {
+              LIGHTING_FIXTURE_MAIN = val;
+            }
+
+            break;
+
+          // update fixture lighting bath
+          case 110:
+            if(val < MINI_LIGHTING || val > MAXI_LIGHTING)
+            {
+
+               LIGHTING_FIXTURE_HEATING = MAXI_LIGHTING;
+
+            }
+            else
+            {
+
+              LIGHTING_FIXTURE_HEATING = val;
+
+            }
+
+            break;
+
+          // update fixture heating bath
+          case 120:
+          //function
+          break;
+
+          // deactivate all output
+          case 130:
+            for( int index = MINI_PIN; index <= MAXI_PIN; index ++)
+            {
+              pinMode(index, OUTPUT);
+              digitalWrite(index, LOW);
+            }
+          break;
+        }
+        }
 
 
-
-  
-
-  ///////////////////////////////////////////////////////////////////
-  // PREPARING RESPONSE JSON
-  ///////////////////////////////////////////////////////////////////
-
-  // Allocate the JSON document
+  // PREPARING RESPONSE JSON (Allocate the JSON document)
   StaticJsonDocument<500> doc;
 
   // Make our document represent an object
@@ -120,7 +227,8 @@ void loop() {
 
   // Create the "digital" array
   JsonArray& digitalValues = root.createNestedArray("digital");
-  for (int pin = 0; pin < 14; pin++) {
+  for (int pin = 0; pin < 14; pin++)
+  {
     // Read the digital input
     int value = digitalRead(pin);
 
@@ -128,11 +236,7 @@ void loop() {
     digitalValues.add(value);
   }
 
-  ////////////////////////////////////////////////////////////////
-  // SEND THE JSON FILE TO THE CLIENT
-  ////////////////////////////////////////////////////////////////
-
-  // Write response headers
+  // SEND THE JSON FILE TO THE CLIENT (Write response headers)
   client.println("HTTP/1.0 200 OK");
   client.println("Content-Type: application/json");
   client.println("Connection: close");
@@ -149,15 +253,10 @@ void loop() {
 
 
 
-
-
-
-
-
 String url_item_recovery(const EthernetClient& cl)
 {
   // DECODING VARIABLES GET URL
-  
+
   // decoding steps
   int lecture = 0;
   // initialize the response string
@@ -212,29 +311,33 @@ String url_item_recovery(const EthernetClient& cl)
   return resultat;
 }
 
+
+
+
+
 void url_parameters_recovery(const String& value_p, int& return_p, int& return_v, char del)
 {
-  
+
   String v = "";
   String p = "";
-  
+
   // manages the switch between the parameter and the value
-  bool toggle = false; 
-  
+  bool toggle = false;
+
   for(int i=0; i<=value_p.length()-1; i++)
   {
-    
+
     // if the value is equal to the delimiter i recover the values
-    if(value_p[i] == del) 
+    if(value_p[i] == del)
     {
       toggle = true;
     }
 
-    // otherwise I consider that the parameter scanning is finished and 
+    // otherwise I consider that the parameter scanning is finished and
     // I start the scanning of the values passing the toggle variable to true.
     else
     {
-      // if toggle equal to false i consider 
+      // if toggle equal to false i consider
       // that i am still in the scan of the parameter.
       if(toggle)
       {
@@ -246,11 +349,57 @@ void url_parameters_recovery(const String& value_p, int& return_p, int& return_v
       }
     }
   }
-  
+
   return_p = p.toInt();
   return_v = v.toInt();
-  
+
 }
+
+
+
+
+void output_piloted_pwm(const int& param, const int& value, const int& fixture)
+{
+  Serial.println("process dans fonction");
+  if(value)
+  {
+    analogWrite(param, fixture);
+  }
+
+  else
+  {
+    analogWrite(param, 0);
+  }
+}
+
+
+
+
+
+void output_piloted(const int& param, const int& value, const int& fixture, const int& value_sensor)
+{
+  if(value)
+  {
+    if(value_sensor > fixture)
+    {
+      digitalWrite(param, value);
+    }
+
+    else
+    {
+      digitalWrite(param, 0);
+    }
+  }
+
+  else
+  {
+    digitalWrite(param, value);
+  }
+}
+
+
+
+
 
 // See also
 //  https://arduinojson.org/
