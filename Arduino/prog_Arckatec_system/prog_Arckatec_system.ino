@@ -32,7 +32,7 @@
 //the url_item_recovery function retrieves the parameters of the url
 String url_item_recovery(const EthernetClient& cl);
 
-boolean url_parameters_recovery(String value_p, int& return_p, int& return_v, char del=":");
+void url_parameters_recovery(const String&, int& return_p, int& return_v, char del=':');
 
 //Adress IP
 byte ip[] = {192, 168, 1, 22};
@@ -77,63 +77,26 @@ void loop() {
   // If no client connects I start again at the beginning of the loop
   if (!client) return;
 
-
   ///////////////////////////////////////////////////////////////////
   // DECODING VARIABLES GET URL
   ///////////////////////////////////////////////////////////////////
+  String result = url_item_recovery(client);
 
-  String resultat = url_item_recovery(client);
-
-  ///////////////////////////////////////////////////////////////////
-  // UPDATED I / O
-  ///////////////////////////////////////////////////////////////////
-
-  if(resultat == "2:0")
+  if(result.length() != 0)
   {
-      digitalWrite(2, LOW);
-  }
-  if(resultat == "2:1")
-  {
-      digitalWrite(2, HIGH);
-  }
-
-  if(resultat == "3:0")
-  {
-      digitalWrite(3, LOW);
-  }
-  if(resultat == "3:1")
-  {
-      digitalWrite(3, HIGH);
-  }
-
-  if(resultat == "5:0")
-  {
-      digitalWrite(5, LOW);
-  }
-  if(resultat == "5:1")
-  {
-      digitalWrite(5, HIGH);
-  }
-
-  if(resultat == "6:0")
-  {
-      digitalWrite(6, LOW);
-  }
-  if(resultat == "6:1")
-  {
-      digitalWrite(6, HIGH);
-  }
-
-  if(resultat == "7:0")
-  {
-      digitalWrite(7, LOW);
-  }
-  if(resultat == "7:1")
-  {
-      digitalWrite(7, HIGH);
+      int param;
+      int val;
+      url_parameters_recovery(result, param, val);
+      
+      ///////////////////////////////////////////////////////////////////
+      // UPDATED I / O
+      ///////////////////////////////////////////////////////////////////
+      digitalWrite(param, val);
   }
 
 
+
+  
 
   ///////////////////////////////////////////////////////////////////
   // PREPARING RESPONSE JSON
@@ -249,38 +212,38 @@ String url_item_recovery(const EthernetClient& cl)
   return resultat;
 }
 
-boolean url_parameters_recovery(String value_p, int& return_p, int& return_v, char del)
+void url_parameters_recovery(const String& value_p, int& return_p, int& return_v, char del)
 {
+  
   String v = "";
   String p = "";
   
-  for(int i=0; i<=value_p.length(); i++)
+  // manages the switch between the parameter and the value
+  bool toggle = false; 
+  
+  for(int i=0; i<=value_p.length()-1; i++)
   {
-    // manages the switch between the parameter and the value
-    boolean toggle = false;
-
-    // if the value is not equal to the delimiter
-    // i recover the values
-    if(!value_p[i]==del)
+    
+    // if the value is equal to the delimiter i recover the values
+    if(value_p[i] == del) 
     {
-      // if toggle equal to false i consider 
-      // that i am still in the scan of the parameter.
-      if(!toggle)
-      {
-        p += value_p[i];
-      }
-      else
-      {
-        v += value_p[i];
-      }
-      
+      toggle = true;
     }
 
     // otherwise I consider that the parameter scanning is finished and 
     // I start the scanning of the values passing the toggle variable to true.
     else
     {
-      toggle = true;
+      // if toggle equal to false i consider 
+      // that i am still in the scan of the parameter.
+      if(toggle)
+      {
+        v += value_p[i];
+      }
+      else
+      {
+        p += value_p[i];
+      }
     }
   }
   
