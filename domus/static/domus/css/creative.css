@@ -81,8 +81,11 @@ html, body
 }
 
 
-
-
+.badge-voyant
+{
+  padding: 6px;
+  background-color: red;
+}
 
 
 .index

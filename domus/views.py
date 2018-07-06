@@ -88,9 +88,8 @@ def update(request):
     #ELSE REQUEST IS GET
     else:
         r = requests.get('http://192.168.1.22').json()
-        if int(r['digital'][7]) == 1:
-            context = {'valeur': True}
-        else:
-            context = {'valeur': False}
+
+        context = {'valeur': r}
+
 
     return JsonResponse(context)

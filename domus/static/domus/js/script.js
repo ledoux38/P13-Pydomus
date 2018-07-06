@@ -7,18 +7,22 @@ $(function()
       $.get("/domus/update/",
       function(data)
        {
+         var arr = data.valeur.digital;
+         for (var i = 5; i < arr.length; i++)
+         {
+           var n = "#" + i.toString();
+           var iNum = parseInt(arr[i]);
 
-         if(data.valeur)
-         {
-           console.log(data);
-           $('#voyant').css('background-color', 'green');
-           event.preventDefault();
-         }
-         else
-         {
-           console.log(data);
-           $('#voyant').css('background-color', 'red');
-           event.preventDefault();
+           if(iNum == 1)
+          {
+             $(n).css('background-color', 'green');
+             event.preventDefault();
+          }
+          else
+          {
+             $(n).css('background-color', 'red');
+             event.preventDefault();
+          }
          }
        });
     }
