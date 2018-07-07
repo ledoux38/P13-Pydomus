@@ -24,6 +24,9 @@ $(function()
              event.preventDefault();
           }
          }
+         var arr = data.valeur.capteurs;
+         $('#heatingHumidityBath').val(arr[1]);
+         $('#heatingTemperatureBath').val(arr[0]);
        });
     }
 
