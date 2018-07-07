@@ -87,7 +87,7 @@ def update(request):
 
     #ELSE REQUEST IS GET
     else:
-        r = requests.get('http://192.168.1.22').json()
+        r = requests.get(url).json()
 
         context = {'valeur': r}
 
