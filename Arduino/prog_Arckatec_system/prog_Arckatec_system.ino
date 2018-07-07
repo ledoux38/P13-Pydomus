@@ -62,6 +62,8 @@ void output_piloted_pwm(const int& param, const int& value, const int& fixture);
 
 void output_piloted(const int& param, const int& value, const int& fixture, const int& value_sensor);
 
+void update_output_piloted(const int& pin, const bool& state, const int& fixture, const int& value_sensor);
+
 ///////////////////////////////////////////////////////////////////
 // GLOBAL VARIABLES
 ///////////////////////////////////////////////////////////////////
@@ -75,12 +77,16 @@ EthernetServer server(80);
 int LIGHTING_FIXTURE_MAIN = 100;
 int LIGHTING_FIXTURE_HEATING = 100;
 int HEATING_FIXTURE = 20;
+int VALUE_SENSOR_HEATING = 0;
 
 const byte DHT_SUCCESS = 0;        // Pas d'erreur
 const byte DHT_TIMEOUT_ERROR = 1;  // Temps d'attente dépassé
 const byte DHT_CHECKSUM_ERROR = 2; // Données reçues erronées
 
-byte PIN_CPT = 3;
+int PIN_CPT = 3;
+
+int PIN_HEATING = 7;
+bool HEATING = false;
 
 ///////////////////////////////////////////////////////////////////
 // SETUP
@@ -118,7 +124,10 @@ void setup()
 ///////////////////////////////////////////////////////////////////
 // LOOP
 ///////////////////////////////////////////////////////////////////
-void loop() {
+void loop()
+{
+  update_output_piloted(PIN_HEATING, HEATING, HEATING_FIXTURE, VALUE_SENSOR_HEATING);
+
   // Wait for an incomming connection
   EthernetClient client = server.available();
 
@@ -134,8 +143,6 @@ void loop() {
       int param;
       int val;
       url_parameters_recovery(result, param, val);
-      Serial.println(param);
-      Serial.println(val);
       // UPDATED I / O
         switch(param)
         {
@@ -151,7 +158,7 @@ void loop() {
 
           // heating bath on/off
           case 7:
-            output_piloted(param, val, HEATING_FIXTURE, 30 );
+            HEATING = val;
             break;
 
           // plug main on/off
@@ -196,7 +203,16 @@ void loop() {
 
           // update fixture heating bath
           case 120:
-          //function
+          if(val < MINI_HEATING || val > MAXI_HEATING)
+          {
+             HEATING_FIXTURE = MAXI_HEATING;
+          }
+          else
+          {
+
+            HEATING_FIXTURE = val;
+
+          }
           break;
 
           // deactivate all output
@@ -245,7 +261,7 @@ void loop() {
   switch (readDHT11(PIN_CPT, &temperature, &humidity))
   {
   case DHT_SUCCESS:
-
+    VALUE_SENSOR_HEATING = temperature;
     cpt_values.add(temperature);
     cpt_values.add(humidity);
     break;
@@ -418,6 +434,38 @@ void output_piloted(const int& param, const int& value, const int& fixture, cons
 }
 
 
+
+
+
+void update_output_piloted(const int& pin, const bool& state, const int& fixture, const int& value_sensor)
+{
+  if(state)
+  {
+
+    if(value_sensor - 3 > fixture)
+    {
+
+      digitalWrite(pin, LOW);
+    }
+    else
+    {
+      Serial.println(pin);
+      Serial.println(state);
+      Serial.println(value_sensor);
+      Serial.println(fixture);
+      digitalWrite(pin, HIGH);
+    }
+  }
+  else
+  {
+    digitalWrite(pin, LOW);
+  }
+}
+
+
+
+
+
 byte readDHT11(byte pin, float* temperature, float* humidity)
 {
 
@@ -436,6 +484,10 @@ byte readDHT11(byte pin, float* temperature, float* humidity)
   /* Ok */
   return DHT_SUCCESS;
 }
+
+
+
+
 
 byte readDHT(byte pin, byte* data, unsigned long start_time, unsigned long timeout)
 {
@@ -519,6 +571,11 @@ byte readDHT(byte pin, byte* data, unsigned long start_time, unsigned long timeo
     return DHT_SUCCESS; /* not error */
 
 }
+
+
+
+
+
 // See also
 //  https://arduinojson.org/
 //  https://www.arduino.cc/en/Reference/Ethernet
