@@ -4,4 +4,15 @@
         <img class="d-inline-block align-top" src="{% static 'domus/img/logo_entreprise.png' %}"  alt="">
         <strong>ARCKATEC SYSTEM</strong>
       </a>
+      <div class="navbar-form navbar-right form-inline">
+        <form action="{% url 'domus:settings' %}" method="post">
+          {% csrf_token %}
+          <button class="btn btn-dark" type="button">Parametrages</button>
+        </form>
+        <form action="{% url 'domus:logout' %}" method="post">
+          {% csrf_token %}
+          <button class="btn btn-dark" type="submit">Déconnection</button>
+        </form>
+      </div>
+
     </nav>

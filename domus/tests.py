@@ -33,6 +33,14 @@ class IndexTestCase(TestCase):
         response = self.client.get(reverse('index'))
         self.assertEqual(response.status_code, 200)
 
+    def test_logout_user(self):
+        self.client.post(
+            reverse('domus:loginUser'),
+            {'name': 'test', 'password': 'testpassword'})
+        self.client.post(reverse('domus:logout'))
+        response = self.client.get(reverse('index'))
+        self.assertEqual(response.status_code, 302)
+        
 class SettingsPageTestCase(TestCase):
     """test page setting """
     def test_settings_page(self):
