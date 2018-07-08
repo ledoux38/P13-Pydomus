@@ -50,8 +50,8 @@ def settings(request):
     as well as the authentication
     procedure of the user
     """
-    message = "You asked for the settings page"
-    return HttpResponse(message)
+    context = {}
+    return render(request, 'domus/settings.html', context)
 
 def controlPage(request):
     """the control page is a simple page
