@@ -9,4 +9,5 @@ urlpatterns = [
     url(r'^control/$', views.controlPage, name='controlPage'),
     url(r'^update/$', views.update, name='update'),
     url(r'^logout/$', views.logoutUser, name='logout'),
+    url(r'^mention_Legales/$', views.mentionLegales, name='mention_legales'),
 ]

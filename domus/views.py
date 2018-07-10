@@ -61,6 +61,14 @@ def settings(request):
     context = {}
     return render(request, 'domus/settings.html', context)
 
+def mentionLegales(request):
+    """
+    Function that ensures
+    the display of the legal notice page
+    """
+    context = {}
+    return render(request, 'domus/mention_legales.html', context)
+
 def controlPage(request):
     """the control page is a simple page
      for sending commands to the microcontroller
