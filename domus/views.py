@@ -48,8 +48,11 @@ def loginUser(request):
 def logoutUser(request):
     """function used to disconnect users"""
     logout(request)
-    return render(request, 'domus/login.html')
+    form = Login()
+    context = {"login": form}
+    return render(request, 'domus/login.html', context)
 
+@login_required(login_url='/domus/login')
 def settings(request):
     """ensures the display of the login page
     as well as the authentication
