@@ -22,7 +22,6 @@ from domus import views
 urlpatterns = [
     url(r'^$', views.index, name="index"),
     url(r'^domus/', include('domus.urls', namespace="domus")),
-    url(r'^control/$', views.controlPage, name='controlPage'),
     url(r'^login/$', views.loginUser, name='loginUser'),
     url(r'^settings/$', views.settings, name='settings'),
     url(r'^update/$', views.update, name='update'),

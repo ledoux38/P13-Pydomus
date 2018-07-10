@@ -69,11 +69,13 @@ def mentionLegales(request):
     context = {}
     return render(request, 'domus/mention_legales.html', context)
 
-def controlPage(request):
-    """the control page is a simple page
-     for sending commands to the microcontroller
-     and receiving information too."""
-    return render(request, 'domus/control.html')
+def contact(request):
+    """
+    Function that ensures
+    the display of the contact page
+    """
+    context = {}
+    return render(request, 'domus/contact.html', context)
 
 @csrf_exempt
 def update(request):

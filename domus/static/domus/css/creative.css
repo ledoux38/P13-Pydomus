@@ -267,3 +267,19 @@ html, body
 {
   margin: 30px;
 }
+
+.contact
+{
+  padding: 0px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: 100%;
+}
+
+.contact-form-corp
+{
+  margin: auto;
+  padding: 30px;
+  background-color: white;
+}
