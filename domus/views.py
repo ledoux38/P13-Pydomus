@@ -7,10 +7,11 @@ from django.http import HttpResponse
 from django.contrib.auth import authenticate, login, logout
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
+from django.core.mail import send_mail
 
 import json
 import requests
-from .forms import Login
+from .forms import Login, Contact
 
 
 
@@ -74,7 +75,18 @@ def contact(request):
     Function that ensures
     the display of the contact page
     """
-    context = {}
+    # If the method is of type POST
+    if request.method == 'POST':
+        f = Contact(request.POST)
+        name = f['name']
+        mail = f['email']
+        objet = f['objet']
+        textArea = f['textArea']
+        toMail = "ledoux.florian30@gmail.com"
+        send_mail(objet, textArea, mail, [toMail], fail_silently=False,)
+
+    form = Contact()
+    context = {"login": form}
     return render(request, 'domus/contact.html', context)
 
 @csrf_exempt

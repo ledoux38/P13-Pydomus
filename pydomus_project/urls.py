@@ -26,4 +26,6 @@ urlpatterns = [
     url(r'^settings/$', views.settings, name='settings'),
     url(r'^update/$', views.update, name='update'),
     url(r'^admin/', admin.site.urls),
+    url(r'^contact/$', views.contact, name='contact'),
+    url(r'^mentions_legales/$', views.mentionLegales, name='mention_legales'),
 ]
