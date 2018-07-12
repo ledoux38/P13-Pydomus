@@ -29,6 +29,7 @@
 #include <ArduinoJson.h>
 #include <Ethernet2.h>
 #include <SPI.h>
+#include <Url.h>
 
 
 
@@ -134,97 +135,109 @@ void loop()
   // If no client connects I start again at the beginning of the loop
   if (!client) return;
 
+  Parameters parameters;
 
   // DECODING VARIABLES GET URL
-  String result = url_item_recovery(client);
-
-  if(result.length() != 0)
+  while (client.available())
   {
-      int param;
-      int val;
-      url_parameters_recovery(result, param, val);
-      // UPDATED I / O
-        switch(param)
-        {
-          // lighting bath on/off
-          case 5:
-            digitalWrite(param, val);
-            break;
+    char c = client.read();
+    // reading a character
+    parameters.filter(c);
+  }
 
-          // plug bath on/off
-          case 6:
-            digitalWrite(param, val);
-            break;
+    // Serial.println("# DEBUT #");
+    // Serial.println(parameters.get_element(0).get_param());
+    // Serial.println(parameters.get_element(0).get_value());
+    // Serial.println("# FIN #");
 
-          // heating bath on/off
-          case 7:
-            HEATING = val;
-            break;
+ if(parameters.length() != 0)
+ {
 
-          // plug main on/off
-          case 8:
-            digitalWrite(param, val);
-            break;
+     int param = parameters.get_element(0).get_param().toInt();
+     int val = parameters.get_element(0).get_value().toInt();
 
-          // lighting main on/off
-          case 9:
-            digitalWrite(param, val);
-            break;
+     // UPDATED I / O
+       switch(param)
+       {
+         // lighting bath on/off
+         case 5:
+           digitalWrite(param, val);
+           break;
 
-          // update fixture lighting main
-          case 100:
-            if(val < MINI_LIGHTING || val > MAXI_LIGHTING)
-            {
-               LIGHTING_FIXTURE_MAIN = MAXI_LIGHTING;
-            }
-            else
-            {
-              LIGHTING_FIXTURE_MAIN = val;
-            }
+         // plug bath on/off
+         case 6:
+           digitalWrite(param, val);
+           break;
 
-            break;
+         // heating bath on/off
+         case 7:
+           HEATING = val;
+           break;
 
-          // update fixture lighting bath
-          case 110:
-            if(val < MINI_LIGHTING || val > MAXI_LIGHTING)
-            {
+         // plug main on/off
+         case 8:
+           digitalWrite(param, val);
+           break;
 
-               LIGHTING_FIXTURE_HEATING = MAXI_LIGHTING;
+         // lighting main on/off
+         case 9:
+           digitalWrite(param, val);
+           break;
 
-            }
-            else
-            {
+         // update fixture lighting main
+         case 100:
+           if(val < MINI_LIGHTING || val > MAXI_LIGHTING)
+           {
+              LIGHTING_FIXTURE_MAIN = MAXI_LIGHTING;
+           }
+           else
+           {
+             LIGHTING_FIXTURE_MAIN = val;
+           }
 
-              LIGHTING_FIXTURE_HEATING = val;
+           break;
 
-            }
+         // update fixture lighting bath
+         case 110:
+           if(val < MINI_LIGHTING || val > MAXI_LIGHTING)
+           {
 
-            break;
+              LIGHTING_FIXTURE_HEATING = MAXI_LIGHTING;
 
-          // update fixture heating bath
-          case 120:
-          if(val < MINI_HEATING || val > MAXI_HEATING)
-          {
-             HEATING_FIXTURE = MAXI_HEATING;
-          }
-          else
-          {
+           }
+           else
+           {
 
-            HEATING_FIXTURE = val;
+             LIGHTING_FIXTURE_HEATING = val;
 
-          }
-          break;
+           }
 
-          // deactivate all output
-          case 130:
-            for( int index = MINI_PIN; index <= MAXI_PIN; index ++)
-            {
-              pinMode(index, OUTPUT);
-              digitalWrite(index, LOW);
-            }
-          break;
-        }
-        }
+           break;
+
+         // update fixture heating bath
+         case 120:
+         if(val < MINI_HEATING || val > MAXI_HEATING)
+         {
+            HEATING_FIXTURE = MAXI_HEATING;
+         }
+         else
+         {
+
+           HEATING_FIXTURE = val;
+
+         }
+         break;
+
+         // deactivate all output
+         case 130:
+           for( int index = MINI_PIN; index <= MAXI_PIN; index ++)
+           {
+             pinMode(index, OUTPUT);
+             digitalWrite(index, LOW);
+           }
+         break;
+       }
+       }
 
 
   // PREPARING RESPONSE JSON (Allocate the JSON document)
@@ -288,115 +301,8 @@ void loop()
 
 
 
-
-String url_item_recovery(const EthernetClient& cl)
-{
-  // DECODING VARIABLES GET URL
-
-  // decoding steps
-  int lecture = 0;
-  // initialize the response string
-  String resultat = "";
-  // string to store the reading of the data
-  String donnee = "";
-
-  // read loop of the data
-  while (cl.available())
-  {
-    // reading a character
-    char c = cl.read();
-
-    // start reading name data
-    if (lecture == 0 && c == '?')
-    {
-      lecture = 1;
-      donnee = "";
-    }
-
-    // start reading a value
-    else if (lecture == 1 && c == '=')
-    {
-      lecture = 2;
-      resultat += donnee + ":";
-      donnee = "";
-    }
-
-    // new variables
-    else if (lecture == 2 && c == '&')
-    {
-      lecture = 1;
-      // build the response string
-      resultat += donnee;
-      donnee = "";
-    }
-
-    // end of reading
-    else if ((lecture == 2 || lecture == 1) && c == ' ')
-    {
-      lecture = 3;
-      resultat += donnee;
-    }
-
-    // retrieve name or value data
-    else if (lecture == 1 || lecture == 2)
-    {
-      donnee += c;
-    }
-    delay(1);
-  }
-  return resultat;
-}
-
-
-
-
-
-void url_parameters_recovery(const String& value_p, int& return_p, int& return_v, char del)
-{
-
-  String v = "";
-  String p = "";
-
-  // manages the switch between the parameter and the value
-  bool toggle = false;
-
-  for(int i=0; i<=value_p.length()-1; i++)
-  {
-
-    // if the value is equal to the delimiter i recover the values
-    if(value_p[i] == del)
-    {
-      toggle = true;
-    }
-
-    // otherwise I consider that the parameter scanning is finished and
-    // I start the scanning of the values passing the toggle variable to true.
-    else
-    {
-      // if toggle equal to false i consider
-      // that i am still in the scan of the parameter.
-      if(toggle)
-      {
-        v += value_p[i];
-      }
-      else
-      {
-        p += value_p[i];
-      }
-    }
-  }
-
-  return_p = p.toInt();
-  return_v = v.toInt();
-
-}
-
-
-
-
 void output_piloted_pwm(const int& param, const int& value, const int& fixture)
 {
-  Serial.println("process dans fonction");
   if(value)
   {
     analogWrite(param, fixture);
@@ -444,15 +350,10 @@ void update_output_piloted(const int& pin, const bool& state, const int& fixture
 
     if(value_sensor - 3 > fixture)
     {
-
       digitalWrite(pin, LOW);
     }
     else
     {
-      Serial.println(pin);
-      Serial.println(state);
-      Serial.println(value_sensor);
-      Serial.println(fixture);
       digitalWrite(pin, HIGH);
     }
   }
