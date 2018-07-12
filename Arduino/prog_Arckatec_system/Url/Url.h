@@ -6,7 +6,7 @@
 
 #define BEGIN_PARAM_LIST '?'
 #define NEW_PARAM '&'
-#define VALUE '='
+#define EQUAL '='
 #define END ' '
 
 class Element
@@ -29,18 +29,18 @@ class Parameters
   Parameters();
   ~Parameters();
 
-  void parameter_separation(char&);
-  void parameter_separation(String&);
-  void detachment(void);
+  void filter(char&);
   int length(void);
 
-  String get_data(void) const;
   Element get_element(int) const;
 
   private:
-  String m_data;
+
   Element m_table_el[8];
-  boolean m_flag;
+  boolean m_recording;
+  boolean m_w_param;
+  String  m_v_param;
+  String  m_v_valeur;
   int m_cpt;
 };
 
