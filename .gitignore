@@ -5,3 +5,4 @@ env
 __pycache__
 pydomus_project/staticfiles/
 pydomus_project/settings/production.py
+variables_globales.py

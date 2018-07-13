@@ -11,8 +11,9 @@ from django.core.mail import send_mail
 
 import json
 import requests
-from .forms import Login, Contact
 
+from .forms import Login, Contact
+from .variables_globales import KEY
 
 
 
@@ -96,7 +97,6 @@ def update(request):
     r = ""
     context = {}
     list_keys = []
-    key=("key", "1234")
 
     #IF REQUEST IS POST
     if request.method == 'POST':
@@ -112,13 +112,13 @@ def update(request):
 
         param = list_keys[0]
         value = request.POST[list_keys[0]]
-        url_get = url + "?{}={}&{}={}".format(key[0], key[1], param, value)
+        url_get = url + "?{}={}&{}={}".format(KEY[0], KEY[1], param, value)
         requests.get(url_get)
 
     #ELSE REQUEST IS GET
     else:
 
-        url_get = url + "?{}={}".format(key[0], key[1])
+        url_get = url + "?{}={}".format(KEY[0], KEY[1])
         r = requests.get(url_get).json()
 
         context = {'valeur': r}
