@@ -11,122 +11,155 @@
 
   <!-- index -->
   <div class="row index-corp">
+
     <!--Img-->
     <div class="col-sm-6">
-      <span>
         <img src="{% static 'domus/img/etablissement.png' %}" alt="", class="img-fluid">
-      </span>
     </div>
+
     <!--parameters-->
     <div class="col-sm-6 parameters border border-dark rounded">
       <div class="row">
-        <form class="form-horizontal">
-          <!-- Cuisine -->
-          <label for="text" class="control-label label-group">Cuisine</label>
-          <div class="row cuisine border border-dark rounded">
-            <div class="form-group">
-              <label for="text" class="control-label">luminaires:</label>
-              <div class="row">
-                <button type="button" class="btn btn-primary">on</button>
-                <button type="button" class="btn btn-light">off</button>
-              </div>
-              <label for="text" class="control-label">Prises:</label>
-              <div class="row">
-                <button type="button" class="btn btn-primary">on</button>
-                <button type="button" class="btn btn-light">off</button>
-              </div>
-            </div>
-          </div>
+        <form class="form-horizontal form-parameters">
 
-          <!-- Salon -->
-          <label for="text" class="control-label label-group">Salon</label>
-          <div class="row salon border border-dark rounded">
+          <!-- Main room -->
+          <label for="text" class="label-group descriptif-label">Piece principale</label>
+          <div class="row main-room border border-dark rounded">
             <div class="form-group">
 
+              <!-- lighting -->
               <label for="text" class="control-label">luminaires:</label>
-              <div class="row form-inline">
-                <button type="button" class="btn btn-primary">on</button>
-                <button type="button" class="btn btn-light">off</button>
-                <div class="input-group">
-                  <input type="text" class="form-control" placeholder="100" aria-label="percentage" aria-describedby="basic-addon2">
-                  <div class="input-group-append">
-                    <span class="input-group-text" id="basic-addon2">%</span>
+              <div class="row">
+
+                <div class="col-sm-6">
+                  <span class="badge-voyant badge badge-primary" id="9"> </span>
+                  <button id="lumOnMain" type="button" class="btn btn-primary">on</button>
+                  <button id="lumOffMain" type="button" class="btn btn-light">off</button>
+                </div>
+
+                <div class="col-sm-6">
+                  <div class="input-group">
+                    <input id="lumPercentMain" type="text" class="form-control" placeholder="100" aria-label="percentage" aria-describedby="basic-addon2">
+                    <div class="input-group-append">
+                      <span class="input-group-text" id="basic-addon2">%</span>
+                    </div>
                   </div>
                 </div>
               </div>
 
+              <!-- plug -->
               <label for="text" class="control-label">Prises:</label>
               <div class="row">
-                <button type="button" class="btn btn-primary">on</button>
-                <button type="button" class="btn btn-light">off</button>
+                <div class="col-sm-6">
+                  <span class="badge-voyant badge badge-primary" id="8"> </span>
+                  <button id="plugOnMain" type="button" class="btn btn-primary">on</button>
+                  <button id="plugOffMain" type="button" class="btn btn-light">off</button>
+                </div>
               </div>
+
             </div>
           </div>
 
-          <!-- Chambre -->
-          <label for="text" class="control-label label-group">Chambre</label>
-          <div class="row chambre border border-dark rounded">
-            <div class="form-group">
-              <label for="text" class="control-label">luminaires:</label>
-              <div class="row">
-                <button type="button" class="btn btn-primary">on</button>
-                <button type="button" class="btn btn-light">off</button>
-              </div>
-              <label for="text" class="control-label">Prises:</label>
-              <div class="row">
-                <button type="button" class="btn btn-primary">on</button>
-                <button type="button" class="btn btn-light">off</button>
-              </div>
-            </div>
-          </div>
-
-          <!-- Salle de bain -->
-          <label for="text" class="control-label label-group">Salle de bain</label>
+          <!-- Bathroom -->
+          <label for="text" class="label-group descriptif-label">Salle de bain</label>
           <div class="row sdb border border-dark rounded">
             <div class="form-group">
               <label for="text" class="control-label">luminaires:</label>
-              <div class="row form-inline">
-                <button type="button" class="btn btn-primary">on</button>
-                <button type="button" class="btn btn-light">off</button>
-                <div class="input-group">
-                  <input type="text" class="form-control" placeholder="100" aria-label="percentage" aria-describedby="basic-addon2">
-                  <div class="input-group-append">
-                    <span class="input-group-text" id="basic-addon2">%</span>
+
+              <!-- lighting -->
+              <div class="row">
+
+                <div class="col-sm-6">
+                  <span class="badge-voyant badge badge-primary" id="5"> </span>
+                  <button id="lumOnBath" type="button" class="btn btn-primary">on</button>
+                  <button id="lumOffBath" type="button" class="btn btn-light">off</button>
+                </div>
+
+                <div class="col-sm-6">
+                  <div class="input-group">
+                    <input id="lumPercentBath" type="text" class="form-control" placeholder="100" aria-label="percentage" aria-describedby="basic-addon2">
+                    <div class="input-group-append">
+                      <span class="input-group-text" id="basic-addon2">%</span>
+                    </div>
                   </div>
+                </div>
+
+              </div>
+
+                <!-- plug -->
+                <label for="text" class="control-label">Prises:</label>
+                <div class="row">
+                  <div class="col-sm-6">
+                    <span class="badge-voyant badge badge-primary" id="6"> </span>
+                    <button id="plugOnBath" type="button" class="btn btn-primary">on</button>
+                    <button id="plugOffBath" type="button" class="btn btn-light">off</button>
+                  </div>
+                </div>
+
+                <!-- heating -->
+                <label for="text" class="control-label">Chauffage:</label>
+
+                <div class="row">
+                  <div class="col-sm-6">
+                    <span class="badge-voyant badge badge-primary"  id="7"> </span>
+                    <button id="heatingOnBath" type="button" class="btn btn-primary">on</button>
+                    <button id="heatingOffBath" type="button" class="btn btn-light">off</button>
+                  </div>
+
+                  <div class="col-sm-6">
+                    <div class="input-group">
+                      <input id="heatingPercentBath" type="text" class="form-control" placeholder="20" aria-label="percentage" aria-describedby="basic-addon2">
+                      <div class="input-group-append">
+                        <span class="input-group-text" id="basic-addon2">°C</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
               </div>
             </div>
-
-            <label for="text" class="control-label">Prises:</label>
-            <div class="row">
-              <button type="button" class="btn btn-primary">on</button>
-              <button type="button" class="btn btn-light">off</button>
-            </div>
-
-            <label for="text" class="control-label">Chauffage:</label>
-            <div class="row form-inline">
-              <button type="button" class="btn btn-primary">on</button>
-              <button type="button" class="btn btn-light">off</button>
-                <div class="input-group">
-                  <input type="text" class="form-control" placeholder="20" aria-label="percentage" aria-describedby="basic-addon2">
-                  <div class="input-group-append">
-                    <span class="input-group-text" id="basic-addon2">°C</span>
+            <!-- sensor -->
+            <label for="text" class="label-group descriptif-label">Capteurs</label>
+            <div class="row main-room border border-dark rounded">
+              <div class="row">
+                <div class="col-sm-3">
+                  <div class="form-group">
+                    <label for="text">Humidité:</label>
+                    <div class="input-group">
+                      <input id="heatingHumidityBath" readonly type="text" class="form-control" aria-label="percentage" aria-describedby="basic-addon2">
+                      <div class="input-group-append">
+                        <span class="input-group-text" id="basic-addon2">%</span>
+                      </div>
+                    </div>
                   </div>
-              </div>
+                </div>
+
+                <div class="col-sm-3">
+                  <div class="form-group">
+                    <label for="text">Temperature:</label>
+                    <div class="input-group">
+                      <input id="heatingTemperatureBath" readonly type="text" class="form-control" aria-label="degrees" aria-describedby="basic-addon2">
+                        <div class="input-group-append">
+                          <span class="input-group-text" id="basic-addon2">°C</span>
+                        </div>
+                    </div>
+                  </div>
+                </div>
             </div>
           </div>
-      </div>
+
+          <!-- Command -->
           <div class="row index-exec-group">
-            <div class="col">
-              <button type="button" class="btn btn-primary btn-lg btn-block">Mettre à jour</button>
-            </div>
-            <div class="col">
-              <button type="button" class="btn btn-danger btn-lg btn-lg btn-block">Tous désactiver</button>
-            </div>
+              <button id="deactivate_all" type="button" class="btn btn-danger btn-lg btn-block">Tous désactiver</button>
           </div>
-        </form>
 
+        </form>
+      </div>
     </div>
+
+  <!-- end-index -->
   </div>
+
+
 
   <!-- footer -->
   <div class="row footer">
@@ -134,5 +167,4 @@
   </div>
 
 </div>
-
 {% endblock %}

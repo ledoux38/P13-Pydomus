@@ -1,7 +1,21 @@
 {% load static %}
     <nav class="navbar navbar-dark bg-dark">
-      <a class="navbar-brand" href="#">
+      <a class="navbar-brand" href="{% url 'domus:index'%}">
         <img class="d-inline-block align-top" src="{% static 'domus/img/logo_entreprise.png' %}"  alt="">
         <strong>ARCKATEC SYSTEM</strong>
       </a>
+
+      {% if user.is_authenticated %}
+      <div class="navbar-form navbar-right form-inline">
+        <form action="{% url 'domus:settings' %}" method="post">
+          {% csrf_token %}
+          <button class="btn btn-dark" type="submit">Parametrages</button>
+        </form>
+        <form action="{% url 'domus:logout' %}" method="post">
+          {% csrf_token %}
+          <button class="btn btn-dark" type="submit">Déconnection</button>
+        </form>
+      </div>
+      {% endif %}
+
     </nav>

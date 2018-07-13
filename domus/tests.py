@@ -33,9 +33,34 @@ class IndexTestCase(TestCase):
         response = self.client.get(reverse('index'))
         self.assertEqual(response.status_code, 200)
 
-class SettingsPageTestCase(TestCase):
-    """test page setting """
     def test_settings_page(self):
         """referral code status test 200 from setting page"""
+        self.client.post(
+            reverse('domus:loginUser'),
+            {'name': 'test', 'password': 'testpassword'})
         response = self.client.get(reverse('settings'))
+        self.assertEqual(response.status_code, 200)
+
+
+    def test_logout_user(self):
+        self.client.post(
+            reverse('domus:loginUser'),
+            {'name': 'test', 'password': 'testpassword'})
+        self.client.post(reverse('domus:logout'))
+        response = self.client.get(reverse('index'))
+        self.assertEqual(response.status_code, 302)
+
+
+class mentionsLegalesPageTestCase(TestCase):
+    """test page mentions legales """
+    def test_mentions_legales_page(self):
+        """referral code status test 200 from contact page"""
+        response = self.client.get(reverse('mention_legales'))
+        self.assertEqual(response.status_code, 200)
+
+class ContactPageTestCase(TestCase):
+    """test page contact """
+    def test_contact_page(self):
+        """referral code status test 200 from contact page"""
+        response = self.client.get(reverse('contact'))
         self.assertEqual(response.status_code, 200)
