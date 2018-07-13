@@ -30,7 +30,7 @@
 #include <Ethernet2.h>
 #include <SPI.h>
 #include <Url.h>
-
+#include <Variables_globales.h>
 
 
 
@@ -145,160 +145,170 @@ void loop()
     parameters.filter(c);
   }
 
-    // Serial.println("# DEBUT #");
-    // Serial.println(parameters.get_element(0).get_param());
-    // Serial.println(parameters.get_element(0).get_value());
-    // Serial.println("# FIN #");
-
- if(parameters.length() != 0)
- {
-
-     int param = parameters.get_element(0).get_param().toInt();
-     int val = parameters.get_element(0).get_value().toInt();
-
-     // UPDATED I / O
-       switch(param)
-       {
-         // lighting bath on/off
-         case 5:
-           digitalWrite(param, val);
-           break;
-
-         // plug bath on/off
-         case 6:
-           digitalWrite(param, val);
-           break;
-
-         // heating bath on/off
-         case 7:
-           HEATING = val;
-           break;
-
-         // plug main on/off
-         case 8:
-           digitalWrite(param, val);
-           break;
-
-         // lighting main on/off
-         case 9:
-           digitalWrite(param, val);
-           break;
-
-         // update fixture lighting main
-         case 100:
-           if(val < MINI_LIGHTING || val > MAXI_LIGHTING)
+  if(parameters.get_element(0).get_value().toInt() == KEY)
+  {
+    
+     if(parameters.length() > 1)
+     {
+       int param = parameters.get_element(1).get_param().toInt();
+       int val = parameters.get_element(1).get_value().toInt();
+  
+       // UPDATED I / O
+         switch(param)
+         {
+           // lighting bath on/off
+           case 5:
+             digitalWrite(param, val);
+             break;
+  
+           // plug bath on/off
+           case 6:
+             digitalWrite(param, val);
+             break;
+  
+           // heating bath on/off
+           case 7:
+             HEATING = val;
+             break;
+  
+           // plug main on/off
+           case 8:
+             digitalWrite(param, val);
+             break;
+  
+           // lighting main on/off
+           case 9:
+             digitalWrite(param, val);
+             break;
+  
+           // update fixture lighting main
+           case 100:
+             if(val < MINI_LIGHTING || val > MAXI_LIGHTING)
+             {
+                LIGHTING_FIXTURE_MAIN = MAXI_LIGHTING;
+             }
+             else
+             {
+               LIGHTING_FIXTURE_MAIN = val;
+             }
+  
+             break;
+  
+           // update fixture lighting bath
+           case 110:
+             if(val < MINI_LIGHTING || val > MAXI_LIGHTING)
+             {
+  
+                LIGHTING_FIXTURE_HEATING = MAXI_LIGHTING;
+  
+             }
+             else
+             {
+  
+               LIGHTING_FIXTURE_HEATING = val;
+  
+             }
+  
+             break;
+  
+           // update fixture heating bath
+           case 120:
+           if(val < MINI_HEATING || val > MAXI_HEATING)
            {
-              LIGHTING_FIXTURE_MAIN = MAXI_LIGHTING;
+              HEATING_FIXTURE = MAXI_HEATING;
            }
            else
            {
-             LIGHTING_FIXTURE_MAIN = val;
+  
+             HEATING_FIXTURE = val;
+  
            }
-
            break;
-
-         // update fixture lighting bath
-         case 110:
-           if(val < MINI_LIGHTING || val > MAXI_LIGHTING)
-           {
-
-              LIGHTING_FIXTURE_HEATING = MAXI_LIGHTING;
-
-           }
-           else
-           {
-
-             LIGHTING_FIXTURE_HEATING = val;
-
-           }
-
+  
+           // deactivate all output
+           case 130:
+             for( int index = MINI_PIN; index <= MAXI_PIN; index ++)
+             {
+               pinMode(index, OUTPUT);
+               digitalWrite(index, LOW);
+             }
            break;
-
-         // update fixture heating bath
-         case 120:
-         if(val < MINI_HEATING || val > MAXI_HEATING)
-         {
-            HEATING_FIXTURE = MAXI_HEATING;
          }
-         else
-         {
-
-           HEATING_FIXTURE = val;
-
-         }
-         break;
-
-         // deactivate all output
-         case 130:
-           for( int index = MINI_PIN; index <= MAXI_PIN; index ++)
-           {
-             pinMode(index, OUTPUT);
-             digitalWrite(index, LOW);
-           }
-         break;
-       }
-       }
-
-
-  // PREPARING RESPONSE JSON (Allocate the JSON document)
-  StaticJsonDocument<500> doc;
-
-  // Make our document represent an object
-  JsonObject& root = doc.to<JsonObject>();
-
-  // Create the "analog" array
-  JsonArray& analogValues = root.createNestedArray("analog");
-  for (int pin = 0; pin < 6; pin++) {
-    // Read the analog input
-    int value = analogRead(pin);
-
-    // Add the value at the end of the array
-    analogValues.add(value);
+         
+        client.println("HTTP/1.0 200 ok");
+        client.println("Content-Type: application/json");
+        client.println("Connection: close");
+        client.stop();
+     }
+     else
+     {
+        // PREPARING RESPONSE JSON (Allocate the JSON document)
+        StaticJsonDocument<500> doc;
+      
+        // Make our document represent an object
+        JsonObject& root = doc.to<JsonObject>();
+      
+        // Create the "analog" array
+        JsonArray& analogValues = root.createNestedArray("analog");
+        for (int pin = 0; pin < 6; pin++) {
+          // Read the analog input
+          int value = analogRead(pin);
+      
+          // Add the value at the end of the array
+          analogValues.add(value);
+        }
+      
+        // Create the "digital" array
+        JsonArray& digitalValues = root.createNestedArray("digital");
+        for (int pin = 0; pin < 14; pin++)
+        {
+          // Read the digital input
+          int value = digitalRead(pin);
+      
+          // Add the value at the end of the array
+          digitalValues.add(value);
+        }
+      
+        JsonArray& cpt_values = root.createNestedArray("capteurs");
+        float temperature, humidity;
+      
+        /* Reading of temperature and humidity, with error management */
+        switch (readDHT11(PIN_CPT, &temperature, &humidity))
+        {
+        case DHT_SUCCESS:
+          VALUE_SENSOR_HEATING = temperature;
+          cpt_values.add(temperature);
+          cpt_values.add(humidity);
+          break;
+      
+          default:
+            cpt_values.add(0);
+            cpt_values.add(0);
+            break;
+        }
+      
+        // SEND THE JSON FILE TO THE CLIENT (Write response headers)
+        client.println("HTTP/1.0 200 OK");
+        client.println("Content-Type: application/json");
+        client.println("Connection: close");
+        client.println();
+      
+        // Write JSON document
+        serializeJsonPretty(root, client);
+      
+        // Disconnect
+        client.stop();
+     }
   }
-
-  // Create the "digital" array
-  JsonArray& digitalValues = root.createNestedArray("digital");
-  for (int pin = 0; pin < 14; pin++)
+  else
   {
-    // Read the digital input
-    int value = digitalRead(pin);
-
-    // Add the value at the end of the array
-    digitalValues.add(value);
+    client.println("HTTP/1.0 403 Forbidden");
+    client.println("Content-Type: application/json");
+    client.println("Connection: close");
+    client.stop();
   }
 
-  JsonArray& cpt_values = root.createNestedArray("capteurs");
-  float temperature, humidity;
-
-  /* Reading of temperature and humidity, with error management */
-  switch (readDHT11(PIN_CPT, &temperature, &humidity))
-  {
-  case DHT_SUCCESS:
-    VALUE_SENSOR_HEATING = temperature;
-    cpt_values.add(temperature);
-    cpt_values.add(humidity);
-    break;
-
-    default:
-      cpt_values.add(0);
-      cpt_values.add(0);
-      break;
-  }
-
-  // SEND THE JSON FILE TO THE CLIENT (Write response headers)
-  client.println("HTTP/1.0 200 OK");
-  client.println("Content-Type: application/json");
-  client.println("Connection: close");
-  client.println();
-
-  // Write JSON document
-  serializeJsonPretty(root, client);
-
-  // Disconnect
-  client.stop();
 }
-
-
 
 
 void output_piloted_pwm(const int& param, const int& value, const int& fixture)
