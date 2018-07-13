@@ -96,23 +96,19 @@ def update(request):
     url = "http://192.168.1.22"
     r = ""
     context = {}
-    list_keys = []
 
     #IF REQUEST IS POST
     if request.method == 'POST':
-
         # recovery of the key of the request
         # for preparation of the url towards
         # the microcontroller
-
-        for cle in request.POST.keys():
-            list_keys.append(cle)
-
         # preparing the URL
+        r_type = request.POST.get("type")
+        r_el = request.POST.get("element")
+        r_val = request.POST.get("valeur")
+        print("{}:{}:{}".format(r_type, r_el, r_val))
+        url_get = url + "?{}={}&{}={}&{}={}&{}={}".format(KEY[0],KEY[1],"type", r_type, "element", r_el, "valeur", r_val)
 
-        param = list_keys[0]
-        value = request.POST[list_keys[0]]
-        url_get = url + "?{}={}&{}={}".format(KEY[0], KEY[1], param, value)
         requests.get(url_get)
 
     #ELSE REQUEST IS GET

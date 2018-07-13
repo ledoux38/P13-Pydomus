@@ -41,7 +41,8 @@ $(function()
     (
       function ()
       {
-        $.post("/domus/update/",{9: 1});
+        $.post("/domus/update/",{"type": 1, "element": 9, "valeur": 1});
+        // $.post("/domus/update/",{9: 1});
         event.preventDefault();
       }
     );
@@ -50,7 +51,8 @@ $(function()
     (
       function ()
       {
-        $.post("/domus/update/",{9: 0});
+        $.post("/domus/update/",{"type":1, "element":9, "valeur": 0});
+        // $.post("/domus/update/",{9: 0});
         event.preventDefault();
       }
     );
@@ -60,7 +62,8 @@ $(function()
       function ()
       {
         var message = $('#lumPercentMain').val();
-        $.post("/domus/update/",{100: message});
+        $.post("/domus/update/",{"type":2, "element":100, "valeur": message});
+        // $.post("/domus/update/",{100: message});
         event.preventDefault();
       }
     );
@@ -71,7 +74,8 @@ $(function()
     (
       function ()
       {
-        $.post("/domus/update/",{8: 1});
+        $.post("/domus/update/",{"type":1, "element":8, "valeur": 1});
+        // $.post("/domus/update/",{8: 1});
         event.preventDefault();
       }
     );
@@ -80,7 +84,8 @@ $(function()
     (
       function ()
       {
-        $.post("/domus/update/",{8: 0});
+        $.post("/domus/update/",{"type":1, "element":8, "valeur": 0});
+        // $.post("/domus/update/",{8: 0});
         event.preventDefault();
       }
     );
@@ -94,7 +99,8 @@ $(function()
     (
       function ()
       {
-        $.post("/domus/update/",{5: 1});
+        $.post("/domus/update/",{"type":1, "element":5, "valeur": 1});
+        // $.post("/domus/update/",{5: 1});
         event.preventDefault();
       }
     );
@@ -103,7 +109,8 @@ $(function()
     (
       function ()
       {
-        $.post("/domus/update/",{5: 0});
+        $.post("/domus/update/",{"type":1, "element":5, "valeur": 0});
+        // $.post("/domus/update/",{5: 0});
         event.preventDefault();
       }
     );
@@ -113,7 +120,8 @@ $(function()
       function ()
       {
         var message = $('#lumPercentBath').val();
-        $.post("/domus/update/",{110: message});
+        $.post("/domus/update/",{"type":2, "element":110, "valeur": message});
+        // $.post("/domus/update/",{110: message});
         event.preventDefault();
       }
     );
@@ -123,7 +131,8 @@ $(function()
     (
       function ()
       {
-        $.post("/domus/update/",{6: 1});
+        // $.post("/domus/update/",{6: 1});
+        $.post("/domus/update/",{"type":1, "element":6, "valeur": 1});
         event.preventDefault();
       }
     );
@@ -132,7 +141,8 @@ $(function()
     (
       function ()
       {
-        $.post("/domus/update/",{6: 0});
+        $.post("/domus/update/",{"type":1, "element":6, "valeur": 0});
+        // $.post("/domus/update/",{6: 0});
         event.preventDefault();
       }
     );
@@ -142,7 +152,8 @@ $(function()
     (
       function ()
       {
-        $.post("/domus/update/",{7: 1});
+        $.post("/domus/update/",{"type":3, "element":7, "valeur": 1});
+        // $.post("/domus/update/",{7: 1});
         event.preventDefault();
       }
     );
@@ -151,7 +162,8 @@ $(function()
     (
       function ()
       {
-        $.post("/domus/update/",{7: 0});
+        $.post("/domus/update/",{"type":3, "element":7, "valeur": 0});
+        // $.post("/domus/update/",{7: 0});
         event.preventDefault();
       }
     );
@@ -162,7 +174,8 @@ $(function()
       function ()
       {
         var message = $('#heatingPercentBath').val();
-        $.post("/domus/update/",{120: message});
+        $.post("/domus/update/",{"type":2, "element":120, "valeur": message});
+        // $.post("/domus/update/",{120: message});
         event.preventDefault();
       }
     );
@@ -171,7 +184,8 @@ $(function()
     (
       function ()
       {
-        $.post("/domus/update/",{130: 0});
+        $.post("/domus/update/",{"type":3, "element":130, "valeur": 0});
+        // $.post("/domus/update/",{130: 0});
         event.preventDefault();
       }
     );
