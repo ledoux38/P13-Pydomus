@@ -31,6 +31,7 @@
 #include <SPI.h>
 #include <Url.h>
 #include <Variables_globales.h>
+#include <Utils.h>
 
 
 
@@ -48,16 +49,10 @@
 #define MAXI_HEATING  30
 
 
-
 ///////////////////////////////////////////////////////////////////
 // FUNCTIONS
 ///////////////////////////////////////////////////////////////////
 
-//the url_item_recovery function retrieves the parameters of the url
-String url_item_recovery(const EthernetClient& cl);
-
-// the function cuts the parameter and returns the parameter and value by reference
-void url_parameters_recovery(const String&, int& return_p, int& return_v, char del=':');
 
 void output_piloted_pwm(const int& param, const int& value, const int& fixture);
 
@@ -147,93 +142,58 @@ void loop()
 
   if(parameters.get_element(0).get_value().toInt() == KEY)
   {
-    
+
      if(parameters.length() > 1)
      {
-       int param = parameters.get_element(1).get_param().toInt();
-       int val = parameters.get_element(1).get_value().toInt();
-  
-       // UPDATED I / O
-         switch(param)
-         {
-           // lighting bath on/off
-           case 5:
-             digitalWrite(param, val);
-             break;
-  
-           // plug bath on/off
-           case 6:
-             digitalWrite(param, val);
-             break;
-  
-           // heating bath on/off
-           case 7:
-             HEATING = val;
-             break;
-  
-           // plug main on/off
-           case 8:
-             digitalWrite(param, val);
-             break;
-  
-           // lighting main on/off
-           case 9:
-             digitalWrite(param, val);
-             break;
-  
-           // update fixture lighting main
-           case 100:
-             if(val < MINI_LIGHTING || val > MAXI_LIGHTING)
-             {
-                LIGHTING_FIXTURE_MAIN = MAXI_LIGHTING;
-             }
-             else
-             {
-               LIGHTING_FIXTURE_MAIN = val;
-             }
-  
-             break;
-  
-           // update fixture lighting bath
-           case 110:
-             if(val < MINI_LIGHTING || val > MAXI_LIGHTING)
-             {
-  
-                LIGHTING_FIXTURE_HEATING = MAXI_LIGHTING;
-  
-             }
-             else
-             {
-  
-               LIGHTING_FIXTURE_HEATING = val;
-  
-             }
-  
-             break;
-  
-           // update fixture heating bath
-           case 120:
-           if(val < MINI_HEATING || val > MAXI_HEATING)
-           {
-              HEATING_FIXTURE = MAXI_HEATING;
-           }
-           else
-           {
-  
-             HEATING_FIXTURE = val;
-  
-           }
-           break;
-  
-           // deactivate all output
-           case 130:
-             for( int index = MINI_PIN; index <= MAXI_PIN; index ++)
-             {
-               pinMode(index, OUTPUT);
-               digitalWrite(index, LOW);
-             }
-           break;
-         }
+        int type = parameters.get_element(1).get_value().toInt();
+        int el = parameters.get_element(2).get_value().toInt();
+        int val = parameters.get_element(3).get_value().toInt();
+        
+        switch(type)
+        {
+          case 1:
+            digitalWrite(el, val);
+            break;
+
+          case 2:
+            switch(el)
+            {
+             // update fixture lighting main
+             case 100:
+               update(LIGHTING_FIXTURE_MAIN, val, MAXI_LIGHTING, MINI_LIGHTING);
+               break;
+               
+             // update fixture lighting bath
+             case 110:
+               update(LIGHTING_FIXTURE_HEATING, val, MAXI_LIGHTING, MINI_LIGHTING);
+               break;
+               
+             // update fixture heating bath
+             case 120:
+               update(HEATING_FIXTURE, val, MAXI_HEATING, MINI_HEATING);
+               break;
+            }
+            
+            break;
+            
+          case 3:
+            switch(el)
+            {
+              // update variable heating
+              case 7:
+                HEATING = val;
+                break;
+              
+              // deactivate all output
+              case 130:
+                for( int index = MINI_PIN; index <= MAXI_PIN; index ++)
+                {
+                  digitalWrite(index, LOW);
+                }
+                HEATING = false;
+                break;
+            }
+        }
          
         client.println("HTTP/1.0 200 ok");
         client.println("Content-Type: application/json");
