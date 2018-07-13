@@ -96,7 +96,7 @@ def update(request):
     r = ""
     context = {}
     list_keys = []
-
+    key=("key", "1234")
 
     #IF REQUEST IS POST
     if request.method == 'POST':
@@ -110,14 +110,16 @@ def update(request):
 
         # preparing the URL
 
-        key = list_keys[0]
+        param = list_keys[0]
         value = request.POST[list_keys[0]]
-        url_get = url + "?{}={}".format(key, value)
+        url_get = url + "?{}={}&{}={}".format(key[0], key[1], param, value)
         requests.get(url_get)
 
     #ELSE REQUEST IS GET
     else:
-        r = requests.get(url).json()
+
+        url_get = url + "?{}={}".format(key[0], key[1])
+        r = requests.get(url_get).json()
 
         context = {'valeur': r}
 

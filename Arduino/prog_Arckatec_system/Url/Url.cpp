@@ -64,6 +64,7 @@ void Parameters::filter(char& c)
       this -> m_cpt++;
       this -> m_v_valeur = "";
       this -> m_v_param = "";
+      this -> m_w_param = true;
     }
 
     else if(c == EQUAL)
