@@ -54,7 +54,8 @@ void Parameters::filter(char& c)
         this -> m_v_param = "";
         this -> m_recording = false;
       }
-      else{
+      else
+      {
         this -> m_recording = false;
       }
     }
@@ -104,3 +105,4 @@ int Parameters::length(void)
 {
   return this -> m_cpt;
 }
+
