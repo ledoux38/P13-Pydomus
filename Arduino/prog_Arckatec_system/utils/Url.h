@@ -31,18 +31,20 @@ class Parameters
 
   void filter(char&);
   int length(void);
+  Element get_to_index(int) const;
 
-  Element get_element(int) const;
+  String operator[](String s);
 
   private:
 
   Element m_table_el[8];
-  boolean m_recording;
-  boolean m_w_param;
+  bool m_recording;
+  bool m_w_param;
   String  m_v_param;
   String  m_v_valeur;
   int m_cpt;
 };
 
-#endif
 
+
+#endif

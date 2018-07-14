@@ -95,8 +95,7 @@ void Parameters::filter(char& c)
   }
 }
 
-
-Element Parameters::get_element(int index) const
+Element Parameters::get_to_index(int index) const
 {
   return this -> m_table_el[index];
 }
@@ -106,3 +105,15 @@ int Parameters::length(void)
   return this -> m_cpt;
 }
 
+
+String Parameters::operator[](String s)
+{
+  for(int index(0); index < this -> m_cpt; index++)
+  {
+    if(this -> m_table_el[index].get_param() == s)
+    {
+      return this -> m_table_el[index].get_value();
+    }
+  }
+  return "";
+}

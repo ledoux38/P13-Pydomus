@@ -140,48 +140,52 @@ void loop()
     parameters.filter(c);
   }
 
-  if(parameters.get_element(0).get_value().toInt() == KEY)
+  if(parameters["key"].toInt() == KEY)
   {
 
      if(parameters.length() > 1)
      {
-        int type = parameters.get_element(1).get_value().toInt();
-        int el = parameters.get_element(2).get_value().toInt();
-        int val = parameters.get_element(3).get_value().toInt();
         
-        switch(type)
+        switch(parameters["type"].toInt())
         {
           case 1:
-            digitalWrite(el, val);
+            digitalWrite(parameters["element"].toInt(), parameters["valeur"].toInt());
             break;
 
           case 2:
-            switch(el)
+            switch(parameters["element"].toInt())
             {
              // update fixture lighting main
              case 100:
-               update(LIGHTING_FIXTURE_MAIN, val, MAXI_LIGHTING, MINI_LIGHTING);
+               update(LIGHTING_FIXTURE_MAIN, parameters["valeur"].toInt(), MAXI_LIGHTING, MINI_LIGHTING);
                break;
                
              // update fixture lighting bath
              case 110:
-               update(LIGHTING_FIXTURE_HEATING, val, MAXI_LIGHTING, MINI_LIGHTING);
+               update(LIGHTING_FIXTURE_HEATING, parameters["valeur"].toInt(), MAXI_LIGHTING, MINI_LIGHTING);
                break;
                
              // update fixture heating bath
              case 120:
-               update(HEATING_FIXTURE, val, MAXI_HEATING, MINI_HEATING);
+               update(HEATING_FIXTURE, parameters["valeur"].toInt(), MAXI_HEATING, MINI_HEATING);
+               break;
+
+             default:
+               client.println("HTTP/1.0 400 Bad Request");
+               client.println("Content-Type: application/json");
+               client.println("Connection: close");
+               client.stop();
                break;
             }
             
             break;
             
           case 3:
-            switch(el)
+            switch(parameters["element"].toInt())
             {
               // update variable heating
               case 7:
-                HEATING = val;
+                HEATING = parameters["valeur"].toInt();
                 break;
               
               // deactivate all output
@@ -192,7 +196,21 @@ void loop()
                 }
                 HEATING = false;
                 break;
+            
+              default:
+                client.println("HTTP/1.0 400 Bad Request");
+                client.println("Content-Type: application/json");
+                client.println("Connection: close");
+                client.stop();
+                break;
             }
+            
+          default:
+            client.println("HTTP/1.0 400 Bad Request");
+            client.println("Content-Type: application/json");
+            client.println("Connection: close");
+            client.stop();
+            break;
         }
          
         client.println("HTTP/1.0 200 ok");
