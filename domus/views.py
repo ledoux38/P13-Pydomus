@@ -96,6 +96,7 @@ def update(request):
     url = "http://192.168.1.22"
     r = ""
     context = {}
+    param = {KEY[0]: KEY[1]}
 
     #IF REQUEST IS POST
     if request.method == 'POST':
@@ -103,21 +104,17 @@ def update(request):
         # for preparation of the url towards
         # the microcontroller
         # preparing the URL
-        r_type = request.POST.get("type")
-        r_el = request.POST.get("element")
-        r_val = request.POST.get("valeur")
-        print("{}:{}:{}".format(r_type, r_el, r_val))
-        url_get = url + "?{}={}&{}={}&{}={}&{}={}".format(KEY[0],KEY[1],"type", r_type, "element", r_el, "valeur", r_val)
 
-        requests.get(url_get)
+
+        for i in request.POST.keys():
+            param[i] = request.POST.get(i)
+
+        requests.get(url, params=param)
 
     #ELSE REQUEST IS GET
     else:
 
-        url_get = url + "?{}={}".format(KEY[0], KEY[1])
-        r = requests.get(url_get).json()
-
+        r = requests.get(url, params=param).json()
         context = {'valeur': r}
-
 
     return JsonResponse(context)
