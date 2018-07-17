@@ -5,21 +5,23 @@ class Pair
 {
   public:
   Pair(void);
-  Pair(String, String);
+  Pair(String, String, String);
   ~Pair(void);
 
    String get_value(void) const;
    String get_convert(void) const;
-   
+   String get_id(void) const;
+
    void set_all(String, String);
-   
+   void set_id(String);
+
    char value_to_convert(char);
    char convert_to_value(char);
 
   protected:
   
   private:
-  
+  String m_id;
   String m_value;
   String m_convert;
 };
@@ -30,19 +32,20 @@ class Cryptographie
   public:
   Cryptographie();
 
-  String cryptage(String, int);
-  String decryptage(String, int);
+  String cryptage(String, String);
+  String decryptage(String, String);
 
-  void set_param(Pair);
-  void set_value(Pair);
-  
+  void add_pair(Pair);
+  //void remove_pair(String);
+
+
   protected:
-  
-  private:
-  String m_liste_param[];
-  Pair m_param;
-  Pair m_value;
+  Pair& get(String key);
 
+  private:
+  int m_size;
+  Pair m_list[8];
+  int m_occupied;
 };
 
 #endif
