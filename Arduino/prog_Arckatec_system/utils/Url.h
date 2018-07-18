@@ -31,7 +31,7 @@ class Parameters
 
   void filter(char&);
   int length(void);
-  Element get_to_index(int) const;
+  Element& get_to_index(int);
 
   String operator[](String s);
 

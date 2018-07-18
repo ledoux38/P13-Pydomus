@@ -1,5 +1,4 @@
 
-#include <Arduino.h>
 #include "Url.h"
 
 Element::Element(): m_param(""), m_value("")
@@ -95,7 +94,7 @@ void Parameters::filter(char& c)
   }
 }
 
-Element Parameters::get_to_index(int index) const
+Element& Parameters::get_to_index(int index)
 {
   return this -> m_table_el[index];
 }

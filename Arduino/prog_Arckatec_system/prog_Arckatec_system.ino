@@ -32,6 +32,7 @@
 #include <Url.h>
 #include <Variables_globales.h>
 #include <Utils.h>
+#include <Dth11.h>
 
 
 
@@ -54,11 +55,6 @@
 ///////////////////////////////////////////////////////////////////
 
 
-void output_piloted_pwm(const int& param, const int& value, const int& fixture);
-
-void output_piloted(const int& param, const int& value, const int& fixture, const int& value_sensor);
-
-void update_output_piloted(const int& pin, const bool& state, const int& fixture, const int& value_sensor);
 
 ///////////////////////////////////////////////////////////////////
 // GLOBAL VARIABLES
@@ -75,12 +71,13 @@ int LIGHTING_FIXTURE_HEATING = 100;
 int HEATING_FIXTURE = 20;
 int VALUE_SENSOR_HEATING = 0;
 
-const byte DHT_SUCCESS = 0;        // Pas d'erreur
-const byte DHT_TIMEOUT_ERROR = 1;  // Temps d'attente dépassé
-const byte DHT_CHECKSUM_ERROR = 2; // Données reçues erronées
+const char REPONSE_403[] = "HTTP/1.0 403 Forbidden";
+const char REPONSE_400[] = "HTTP/1.0 400 Bad Request";
+const char REPONSE_200[] = "HTTP/1.0 200 OK";
+const char CONTENT_TYPE[] = "Content-Type: application/json";
+const char CONNECTION[] = "Connection: close";
 
 int PIN_CPT = 3;
-
 int PIN_HEATING = 7;
 bool HEATING = false;
 
@@ -171,9 +168,9 @@ void loop()
                break;
 
              default:
-               client.println("HTTP/1.0 400 Bad Request");
-               client.println("Content-Type: application/json");
-               client.println("Connection: close");
+               client.println(REPONSE_400);
+               client.println(CONTENT_TYPE);
+               client.println(CONNECTION);
                client.stop();
                break;
             }
@@ -198,25 +195,28 @@ void loop()
                 break;
             
               default:
-                client.println("HTTP/1.0 400 Bad Request");
-                client.println("Content-Type: application/json");
-                client.println("Connection: close");
-                client.stop();
+                for(int i(0); i<3; i++)
+                {
+                 client.println(REPONSE_400);
+                 client.println(CONTENT_TYPE);
+                 client.println(CONNECTION);
+                 client.stop();
+                }
                 break;
             }
             
           default:
-            client.println("HTTP/1.0 400 Bad Request");
-            client.println("Content-Type: application/json");
-            client.println("Connection: close");
-            client.stop();
-            break;
+             client.println(REPONSE_400);
+             client.println(CONTENT_TYPE);
+             client.println(CONNECTION);
+             client.stop();
+             break;
         }
          
-        client.println("HTTP/1.0 200 ok");
-        client.println("Content-Type: application/json");
-        client.println("Connection: close");
-        client.stop();
+         client.println(REPONSE_200);
+         client.println(CONTENT_TYPE);
+         client.println(CONNECTION);
+         client.stop();
      }
      else
      {
@@ -259,17 +259,17 @@ void loop()
           cpt_values.add(humidity);
           break;
       
-          default:
-            cpt_values.add(0);
-            cpt_values.add(0);
-            break;
+        default:
+          cpt_values.add(0);
+          cpt_values.add(0);
+          break;
         }
       
         // SEND THE JSON FILE TO THE CLIENT (Write response headers)
-        client.println("HTTP/1.0 200 OK");
-        client.println("Content-Type: application/json");
-        client.println("Connection: close");
-        client.println();
+         client.println(REPONSE_200);
+         client.println(CONTENT_TYPE);
+         client.println(CONNECTION);
+         client.println();
       
         // Write JSON document
         serializeJsonPretty(root, client);
@@ -280,188 +280,13 @@ void loop()
   }
   else
   {
-    client.println("HTTP/1.0 403 Forbidden");
-    client.println("Content-Type: application/json");
-    client.println("Connection: close");
-    client.stop();
+   client.println(REPONSE_403);
+   client.println(CONTENT_TYPE);
+   client.println(CONNECTION);
+   client.stop();
   }
 
 }
-
-
-void output_piloted_pwm(const int& param, const int& value, const int& fixture)
-{
-  if(value)
-  {
-    analogWrite(param, fixture);
-  }
-
-  else
-  {
-    analogWrite(param, 0);
-  }
-}
-
-
-
-
-
-void output_piloted(const int& param, const int& value, const int& fixture, const int& value_sensor)
-{
-  if(value)
-  {
-    if(value_sensor > fixture)
-    {
-      digitalWrite(param, value);
-    }
-
-    else
-    {
-      digitalWrite(param, 0);
-    }
-  }
-
-  else
-  {
-    digitalWrite(param, value);
-  }
-}
-
-
-
-
-
-void update_output_piloted(const int& pin, const bool& state, const int& fixture, const int& value_sensor)
-{
-  if(state)
-  {
-
-    if(value_sensor - 3 > fixture)
-    {
-      digitalWrite(pin, LOW);
-    }
-    else
-    {
-      digitalWrite(pin, HIGH);
-    }
-  }
-  else
-  {
-    digitalWrite(pin, LOW);
-  }
-}
-
-
-
-
-
-byte readDHT11(byte pin, float* temperature, float* humidity)
-{
-
-  /* read sensor */
-  byte data[5];
-  byte ret = readDHT(pin, data, 18, 1000);
-
-  /* detection error communication */
-  if (ret != DHT_SUCCESS)
-    return ret;
-
-  /* calculate the humidity and temp */
-  *humidity = data[0];
-  *temperature = data[2];
-
-  /* Ok */
-  return DHT_SUCCESS;
-}
-
-
-
-
-
-byte readDHT(byte pin, byte* data, unsigned long start_time, unsigned long timeout)
-{
-  data[0] = data[1] = data[2] = data[3] = data[4] = 0;
-  // start_time millisecondes
-  // timeout microsecondes
-  uint8_t bit = digitalPinToBitMask(pin);
-  uint8_t port = digitalPinToPort(pin);
-  volatile uint8_t *ddr = portModeRegister(port);   // Registre MODE (INPUT / OUTPUT)
-  volatile uint8_t *out = portOutputRegister(port); // Registre OUT (écriture)
-  volatile uint8_t *in = portInputRegister(port);   // Registre IN (lecture)
-
-  unsigned long max_cycles = microsecondsToClockCycles(timeout);
-
-  *out |= bit;  // PULLUP
-  *ddr &= ~bit; // INPUT
-  delay(100);
-
-  /* wake up the sensor */
-  *ddr |= bit;  // OUTPUT
-  *out &= ~bit; // LOW
-  delay(start_time);
-  noInterrupts();
-
-  /* listening to the sensor*/
-  *out |= bit;  // PULLUP
-  delayMicroseconds(40);
-  *ddr &= ~bit; // INPUT
-
-  /* Waiting for the sensor response */
-  timeout = 0;
-  while(!(*in & bit)) {
-    if (++timeout == max_cycles) {
-        interrupts();
-        return DHT_TIMEOUT_ERROR;
-      }
-  }
-
-  timeout = 0;
-  while(*in & bit) {
-    if (++timeout == max_cycles) {
-        interrupts();
-        return DHT_TIMEOUT_ERROR;
-      }
-  }
-
-  /* Reading sensor data (40 bits) */
-  for (byte i = 0; i < 40; ++i) {
-
-    /* état LOW */
-    unsigned long cycles_low = 0;
-    while(!(*in & bit)) {
-      if (++cycles_low == max_cycles) {
-        interrupts();
-        return DHT_TIMEOUT_ERROR;
-      }
-    }
-
-    /* état HIGH */
-    unsigned long cycles_high = 0;
-    while(*in & bit) {
-      if (++cycles_high == max_cycles) {
-        interrupts();
-        return DHT_TIMEOUT_ERROR;
-      }
-    }
-
-    data[i / 8] <<= 1;
-    if (cycles_high > cycles_low) {
-      data[i / 8] |= 1;
-    }
-  }
-
-  interrupts();
-
-
-  byte checksum = (data[0] + data[1] + data[2] + data[3]) & 0xff;
-  if (data[4] != checksum)
-    return DHT_CHECKSUM_ERROR; /* error checksum */
-  else
-    return DHT_SUCCESS; /* not error */
-
-}
-
-
 
 
 
