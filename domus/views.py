@@ -135,6 +135,14 @@ def update(request):
 
         param = convert_list_to_dict(container_crypt)
         r = requests.get(url, params=param).json()
-        context = {'valeur': r}
+        print(r)
+        dectryp_dict = {}
+        for keys, values in r.items():
+            dectryp_liste = []
+            for i in values:
+                dectryp_liste.append(cryptage.decryptage(i, "valeur"))
+            dectryp_dict[cryptage.decryptage(keys, "param")] = dectryp_liste
+        print(dectryp_dict)
+        context = {'valeur': dectryp_dict}
 
     return JsonResponse(context)

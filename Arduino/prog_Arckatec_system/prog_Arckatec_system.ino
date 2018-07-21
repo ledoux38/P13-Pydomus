@@ -244,27 +244,39 @@ void loop()
         JsonObject& root = doc.to<JsonObject>();
       
         // Create the "analog" array
-        JsonArray& analogValues = root.createNestedArray("analog");
+        String crypt = "analog";
+        crypt = cryptage(crypt, PARAM_C);
+        JsonArray& analogValues = root.createNestedArray(crypt);
         for (int pin = 0; pin < 6; pin++) {
           // Read the analog input
           int value = analogRead(pin);
-      
+          
+          crypt = String(value);
+          crypt = cryptage(crypt, VALUE_C, NUMBER);
+          
           // Add the value at the end of the array
-          analogValues.add(value);
+          analogValues.add(crypt);
         }
       
         // Create the "digital" array
-        JsonArray& digitalValues = root.createNestedArray("digital");
+        crypt = "digital";
+        crypt = cryptage(crypt, PARAM_C);
+        JsonArray& digitalValues = root.createNestedArray(crypt);
         for (int pin = 0; pin < 14; pin++)
         {
           // Read the digital input
           int value = digitalRead(pin);
-      
+          
+          crypt = String(value);
+          crypt = cryptage(crypt, VALUE_C, NUMBER);  
+              
           // Add the value at the end of the array
-          digitalValues.add(value);
+          digitalValues.add(crypt);
         }
-      
-        JsonArray& cpt_values = root.createNestedArray("capteurs");
+        
+        crypt = "capteurs";
+        crypt = cryptage(crypt, PARAM_C);
+        JsonArray& cpt_values = root.createNestedArray(crypt);
         float temperature, humidity;
       
         /* Reading of temperature and humidity, with error management */
@@ -272,13 +284,21 @@ void loop()
         {
         case DHT_SUCCESS:
           VALUE_SENSOR_HEATING = temperature;
-          cpt_values.add(temperature);
-          cpt_values.add(humidity);
+          
+          crypt = String(temperature);
+          crypt = cryptage(crypt, VALUE_C, NUMBER);  
+          cpt_values.add(crypt);
+          
+          crypt = String(humidity);
+          crypt = cryptage(crypt, VALUE_C, NUMBER);  
+          cpt_values.add(crypt);
           break;
       
         default:
-          cpt_values.add(0);
-          cpt_values.add(0);
+          crypt = "0";
+          crypt = cryptage(crypt, VALUE_C, NUMBER);  
+          cpt_values.add(crypt);
+          cpt_values.add(crypt);
           break;
         }
       
