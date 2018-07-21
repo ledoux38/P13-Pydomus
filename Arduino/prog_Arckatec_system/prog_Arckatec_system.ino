@@ -248,10 +248,9 @@ void loop()
         crypt = cryptage(crypt, PARAM_C);
         JsonArray& analogValues = root.createNestedArray(crypt);
         for (int pin = 0; pin < 6; pin++) {
-          // Read the analog input
-          int value = analogRead(pin);
           
-          crypt = String(value);
+          // Read the analog input
+          crypt = String(analogRead(pin));
           crypt = cryptage(crypt, VALUE_C, NUMBER);
           
           // Add the value at the end of the array
@@ -265,9 +264,7 @@ void loop()
         for (int pin = 0; pin < 14; pin++)
         {
           // Read the digital input
-          int value = digitalRead(pin);
-          
-          crypt = String(value);
+          crypt = String(digitalRead(pin));
           crypt = cryptage(crypt, VALUE_C, NUMBER);  
               
           // Add the value at the end of the array
