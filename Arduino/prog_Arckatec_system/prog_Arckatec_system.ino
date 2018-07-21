@@ -49,6 +49,12 @@
 #define MAXI_HEATING  30
 #define KEY 1234
 
+#define REPONSE_403  "HTTP/1.0 403 Forbidden"
+#define REPONSE_400  "HTTP/1.0 400 Bad Request"
+#define REPONSE_200  "HTTP/1.0 200 OK"
+#define CONTENT_TYPE "Content-Type: application/json"
+#define CONNECTION   "Connection: close"
+
 ///////////////////////////////////////////////////////////////////
 // FUNCTIONS
 ///////////////////////////////////////////////////////////////////
@@ -70,12 +76,6 @@ int LIGHTING_FIXTURE_HEATING = 100;
 int HEATING_FIXTURE = 20;
 int VALUE_SENSOR_HEATING = 0;
 
-const char REPONSE_403[] = "HTTP/1.0 403 Forbidden";
-const char REPONSE_400[] = "HTTP/1.0 400 Bad Request";
-const char REPONSE_200[] = "HTTP/1.0 200 OK";
-const char CONTENT_TYPE[] = "Content-Type: application/json";
-const char CONNECTION[] = "Connection: close";
-
 int PIN_CPT = 3;
 int PIN_HEATING = 7;
 bool HEATING = false;
@@ -96,7 +96,7 @@ void setup()
   pinMode(PIN_CPT, INPUT_PULLUP);
   // serial port initialization
 
-  Serial.begin(9600);
+//  Serial.begin(9600);
   while (!Serial) continue;
 
   // Initialize Ethernet libary
@@ -105,9 +105,9 @@ void setup()
   // Start to listen
   server.begin();
 
-  Serial.println(F("Server is ready."));
-  Serial.print(F("Please connect to http://"));
-  Serial.println(Ethernet.localIP());
+//  Serial.println(F("Server is ready."));
+//  Serial.print(F("Please connect to http://"));
+//  Serial.println(Ethernet.localIP());
 }
 
 
@@ -148,12 +148,6 @@ void loop()
    parameters.get_to_index(i).set_value(decryptage(mp, VALUE_C, NUMBER));
   }
   
-  for(int i(0); i < parameters.length(); i++)
-  {
-  Serial.println(parameters.get_to_index(i).get_param());
-  Serial.println(parameters.get_to_index(i).get_value());
-  }
-
   if(parameters["key"].toInt() == KEY)
   {
   
