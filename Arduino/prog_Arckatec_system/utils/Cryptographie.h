@@ -1,51 +1,24 @@
 #ifndef Cryptographie_h
 #define Cryptographie_h
 #include <Arduino.h>
-class Pair
-{
-  public:
-  Pair(void);
-  Pair(String, String, String);
-  ~Pair(void);
 
-   String get_value(void) const;
-   String get_convert(void) const;
-   String get_id(void) const;
+#define A 97
+#define Z 122
 
-   void set_all(String, String);
-   void set_id(String);
+#define NUMBER_0 48
+#define NUMBER_9 57
 
-   char value_to_convert(char);
-   char convert_to_value(char);
+#define PARAMETRE 0
+#define VALEUR 1
 
-  protected:
-  
-  private:
-  String m_id;
-  String m_value;
-  String m_convert;
-};
+#define ALPHABET 0
+#define NUMBER 1
+		      //abcdefghijklmnopqrstuvwxyz
+const char PARAM_C[] = "LC#TRE_IXA$+NJ-*/%H<>!FDOU";
+const char VALUE_C[] = "L*$I|<_DXA";
 
+String cryptage(String &str, char *tabl_crypt, byte type = ALPHABET);
 
-class Cryptographie
-{
-  public:
-  Cryptographie();
-
-  String cryptage(String, String);
-  String decryptage(String, String);
-
-  void add_pair(Pair);
-  //void remove_pair(String);
-
-
-  protected:
-  Pair& get(String key);
-
-  private:
-  int m_size;
-  Pair m_list[8];
-  int m_occupied;
-};
+String decryptage(String &str, char *tabl_crypt, byte type = ALPHABET);
 
 #endif
