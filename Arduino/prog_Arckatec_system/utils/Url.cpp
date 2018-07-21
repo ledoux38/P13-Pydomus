@@ -22,7 +22,15 @@ String Element::get_value(void) const
   return this -> m_value;
 }
 
+void Element::set_param(String s) 
+{
+	this -> m_param = s;
+}
 
+void Element::set_value(String s) 
+{
+	this -> m_value = s;
+}
 
 
 
@@ -42,7 +50,7 @@ void Parameters::filter(char& c)
   if(this -> m_recording)
   {
 
-    if(c == END)
+    if(c == END || c == '\n')
     {
 
       if(this -> m_v_param.length() != 0 && this -> m_v_valeur.length() != 0)

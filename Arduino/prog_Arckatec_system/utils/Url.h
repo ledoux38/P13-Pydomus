@@ -18,6 +18,9 @@ class Element
   String get_param(void) const;
   String get_value(void) const;
 
+  void set_param(String);
+  void set_value(String);
+
   private:
   String m_param;
   String m_value;
