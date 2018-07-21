@@ -30,10 +30,9 @@
 #include <Ethernet2.h>
 #include <SPI.h>
 #include <Url.h>
-#include <Variables_globales.h>
 #include <Utils.h>
 #include <Dth11.h>
-
+#include <Cryptographie.h>
 
 
 
@@ -48,7 +47,7 @@
 
 #define MINI_HEATING  0
 #define MAXI_HEATING  30
-
+#define KEY 1234
 
 ///////////////////////////////////////////////////////////////////
 // FUNCTIONS
@@ -96,6 +95,7 @@ void setup()
   }
   pinMode(PIN_CPT, INPUT_PULLUP);
   // serial port initialization
+
   Serial.begin(9600);
   while (!Serial) continue;
 
@@ -120,13 +120,13 @@ void setup()
 void loop()
 {
   update_output_piloted(PIN_HEATING, HEATING, HEATING_FIXTURE, VALUE_SENSOR_HEATING);
-
+  
   // Wait for an incomming connection
   EthernetClient client = server.available();
-
+  
   // If no client connects I start again at the beginning of the loop
   if (!client) return;
-
+  
   Parameters parameters;
 
   // DECODING VARIABLES GET URL
@@ -136,10 +136,27 @@ void loop()
     // reading a character
     parameters.filter(c);
   }
+  
+
+  for (int i(0); i < parameters.length(); i++)
+  {
+   String mp = "";
+   mp = parameters.get_to_index(i).get_param();
+   parameters.get_to_index(i).set_param(decryptage(mp, PARAM_C));
+   
+   mp = parameters.get_to_index(i).get_value();
+   parameters.get_to_index(i).set_value(decryptage(mp, VALUE_C, NUMBER));
+  }
+  
+  for(int i(0); i < parameters.length(); i++)
+  {
+  Serial.println(parameters.get_to_index(i).get_param());
+  Serial.println(parameters.get_to_index(i).get_value());
+  }
 
   if(parameters["key"].toInt() == KEY)
   {
-
+  
      if(parameters.length() > 1)
      {
         
@@ -148,7 +165,7 @@ void loop()
           case 1:
             digitalWrite(parameters["element"].toInt(), parameters["valeur"].toInt());
             break;
-
+  
           case 2:
             switch(parameters["element"].toInt())
             {
@@ -166,7 +183,7 @@ void loop()
              case 120:
                update(HEATING_FIXTURE, parameters["valeur"].toInt(), MAXI_HEATING, MINI_HEATING);
                break;
-
+  
              default:
                client.println(REPONSE_400);
                client.println(CONTENT_TYPE);
