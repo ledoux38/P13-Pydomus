@@ -65,3 +65,22 @@ class Crypthographie:
         if not len(chaine_normale) == len(chaine_converti):
             raise ValueError("length chaine_normale != chaine_converti")
         self.m_list[identifiant] = [chaine_normale, chaine_converti]
+
+
+def convert_dict_to_list(dictionary):
+    """
+    convert a list into a dictionary
+    """
+    r_list = []
+    for keys, values in dictionary.items():
+        r_list.append([keys, values])
+    return r_list
+
+def convert_list_to_dict(liste):
+    """
+    convert a dictionary into a list
+    """
+    r_dict = {}
+    for index in liste:
+        r_dict[index[0]] = index[1]
+    return r_dict

@@ -13,7 +13,8 @@ import json
 import requests
 
 from .forms import Login, Contact
-from .variables_globales import KEY
+from .variables_globales import KEY, CRYPTAGES
+from .utils import Crypthographie, convert_dict_to_list, convert_list_to_dict
 
 
 
@@ -97,6 +98,9 @@ def update(request):
     r = ""
     context = {}
     param = {KEY[0]: KEY[1]}
+    cryptage = Crypthographie()
+    cryptage.add_key(CRYPTAGES[0][0], CRYPTAGES[0][1], CRYPTAGES[0][2])
+    cryptage.add_key(CRYPTAGES[1][0], CRYPTAGES[1][1], CRYPTAGES[1][2])
 
     #IF REQUEST IS POST
     if request.method == 'POST':
@@ -105,15 +109,31 @@ def update(request):
         # the microcontroller
         # preparing the URL
 
-
         for i in request.POST.keys():
             param[i] = request.POST.get(i)
+
+        param = convert_dict_to_list(param)
+        container_crypt = []
+        for i in param:
+            p = cryptage.cryptage(i[0], "param")
+            v = cryptage.cryptage(i[1], "valeur")
+            container_crypt.append([p, v])
+
+        param = convert_list_to_dict(container_crypt)
+        print(param)
 
         requests.get(url, params=param)
 
     #ELSE REQUEST IS GET
     else:
+        param = convert_dict_to_list(param)
+        container_crypt = []
+        for i in param:
+            p = cryptage.cryptage(i[0], "param")
+            v = cryptage.cryptage(i[1], "valeur")
+            container_crypt.append([p, v])
 
+        param = convert_list_to_dict(container_crypt)
         r = requests.get(url, params=param).json()
         context = {'valeur': r}
 
