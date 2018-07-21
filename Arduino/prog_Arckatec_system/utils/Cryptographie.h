@@ -14,8 +14,9 @@
 #define ALPHABET 0
 #define NUMBER 1
 		      //abcdefghijklmnopqrstuvwxyz
-const char PARAM_C[] = "LC#TRE_IXA$+NJ-*/%H<>!FDOU";
-const char VALUE_C[] = "L*$I|<_DXA";
+const char PARAM_C[] = "NBVCXWMLKJHGFDSQPOIUYTREZA";
+		      //0123456789
+const char VALUE_C[] = "AZERTYUIOP";
 
 String cryptage(String &str, char *tabl_crypt, byte type = ALPHABET);
 
