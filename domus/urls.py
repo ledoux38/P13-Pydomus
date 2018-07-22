@@ -10,4 +10,5 @@ urlpatterns = [
     url(r'^update/$', views.update, name='update'),
     url(r'^logout/$', views.logoutUser, name='logout'),
     url(r'^mention_Legales/$', views.mentionLegales, name='mention_legales'),
+    url(r'^page_test/$', views.test, name='page_test'),
 ]

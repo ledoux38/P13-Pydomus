@@ -18,6 +18,9 @@ class Element
   String get_param(void) const;
   String get_value(void) const;
 
+  void set_param(String);
+  void set_value(String);
+
   private:
   String m_param;
   String m_value;
@@ -31,18 +34,20 @@ class Parameters
 
   void filter(char&);
   int length(void);
+  Element& get_to_index(int);
 
-  Element get_element(int) const;
+  String operator[](String s);
 
   private:
 
   Element m_table_el[8];
-  boolean m_recording;
-  boolean m_w_param;
+  bool m_recording;
+  bool m_w_param;
   String  m_v_param;
   String  m_v_valeur;
   int m_cpt;
 };
 
-#endif
 
+
+#endif

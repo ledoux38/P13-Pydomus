@@ -30,9 +30,9 @@
 #include <Ethernet2.h>
 #include <SPI.h>
 #include <Url.h>
-#include <Variables_globales.h>
 #include <Utils.h>
-
+#include <Dth11.h>
+#include <Cryptographie.h>
 
 
 
@@ -47,18 +47,19 @@
 
 #define MINI_HEATING  0
 #define MAXI_HEATING  30
+#define KEY 1234
 
+#define REPONSE_403  "HTTP/1.0 403 Forbidden"
+#define REPONSE_400  "HTTP/1.0 400 Bad Request"
+#define REPONSE_200  "HTTP/1.0 200 OK"
+#define CONTENT_TYPE "Content-Type: application/json"
+#define CONNECTION   "Connection: close"
 
 ///////////////////////////////////////////////////////////////////
 // FUNCTIONS
 ///////////////////////////////////////////////////////////////////
 
 
-void output_piloted_pwm(const int& param, const int& value, const int& fixture);
-
-void output_piloted(const int& param, const int& value, const int& fixture, const int& value_sensor);
-
-void update_output_piloted(const int& pin, const bool& state, const int& fixture, const int& value_sensor);
 
 ///////////////////////////////////////////////////////////////////
 // GLOBAL VARIABLES
@@ -75,12 +76,7 @@ int LIGHTING_FIXTURE_HEATING = 100;
 int HEATING_FIXTURE = 20;
 int VALUE_SENSOR_HEATING = 0;
 
-const byte DHT_SUCCESS = 0;        // Pas d'erreur
-const byte DHT_TIMEOUT_ERROR = 1;  // Temps d'attente dépassé
-const byte DHT_CHECKSUM_ERROR = 2; // Données reçues erronées
-
 int PIN_CPT = 3;
-
 int PIN_HEATING = 7;
 bool HEATING = false;
 
@@ -99,7 +95,8 @@ void setup()
   }
   pinMode(PIN_CPT, INPUT_PULLUP);
   // serial port initialization
-  Serial.begin(9600);
+
+//  Serial.begin(9600);
   while (!Serial) continue;
 
   // Initialize Ethernet libary
@@ -108,9 +105,9 @@ void setup()
   // Start to listen
   server.begin();
 
-  Serial.println(F("Server is ready."));
-  Serial.print(F("Please connect to http://"));
-  Serial.println(Ethernet.localIP());
+//  Serial.println(F("Server is ready."));
+//  Serial.print(F("Please connect to http://"));
+//  Serial.println(Ethernet.localIP());
 }
 
 
@@ -123,13 +120,13 @@ void setup()
 void loop()
 {
   update_output_piloted(PIN_HEATING, HEATING, HEATING_FIXTURE, VALUE_SENSOR_HEATING);
-
+  
   // Wait for an incomming connection
   EthernetClient client = server.available();
-
+  
   // If no client connects I start again at the beginning of the loop
   if (!client) return;
-
+  
   Parameters parameters;
 
   // DECODING VARIABLES GET URL
@@ -139,49 +136,64 @@ void loop()
     // reading a character
     parameters.filter(c);
   }
+  
 
-  if(parameters.get_element(0).get_value().toInt() == KEY)
+  for (int i(0); i < parameters.length(); i++)
   {
-
+   String mp = "";
+   mp = parameters.get_to_index(i).get_param();
+   parameters.get_to_index(i).set_param(decryptage(mp, PARAM_C));
+   
+   mp = parameters.get_to_index(i).get_value();
+   parameters.get_to_index(i).set_value(decryptage(mp, VALUE_C, NUMBER));
+  }
+  
+  if(parameters["key"].toInt() == KEY)
+  {
+  
      if(parameters.length() > 1)
      {
-        int type = parameters.get_element(1).get_value().toInt();
-        int el = parameters.get_element(2).get_value().toInt();
-        int val = parameters.get_element(3).get_value().toInt();
         
-        switch(type)
+        switch(parameters["type"].toInt())
         {
           case 1:
-            digitalWrite(el, val);
+            digitalWrite(parameters["element"].toInt(), parameters["valeur"].toInt());
             break;
-
+  
           case 2:
-            switch(el)
+            switch(parameters["element"].toInt())
             {
              // update fixture lighting main
              case 100:
-               update(LIGHTING_FIXTURE_MAIN, val, MAXI_LIGHTING, MINI_LIGHTING);
+               update(LIGHTING_FIXTURE_MAIN, parameters["valeur"].toInt(), MAXI_LIGHTING, MINI_LIGHTING);
                break;
                
              // update fixture lighting bath
              case 110:
-               update(LIGHTING_FIXTURE_HEATING, val, MAXI_LIGHTING, MINI_LIGHTING);
+               update(LIGHTING_FIXTURE_HEATING, parameters["valeur"].toInt(), MAXI_LIGHTING, MINI_LIGHTING);
                break;
                
              // update fixture heating bath
              case 120:
-               update(HEATING_FIXTURE, val, MAXI_HEATING, MINI_HEATING);
+               update(HEATING_FIXTURE, parameters["valeur"].toInt(), MAXI_HEATING, MINI_HEATING);
+               break;
+  
+             default:
+               client.println(REPONSE_400);
+               client.println(CONTENT_TYPE);
+               client.println(CONNECTION);
+               client.stop();
                break;
             }
             
             break;
             
           case 3:
-            switch(el)
+            switch(parameters["element"].toInt())
             {
               // update variable heating
               case 7:
-                HEATING = val;
+                HEATING = parameters["valeur"].toInt();
                 break;
               
               // deactivate all output
@@ -192,13 +204,30 @@ void loop()
                 }
                 HEATING = false;
                 break;
+            
+              default:
+                for(int i(0); i<3; i++)
+                {
+                 client.println(REPONSE_400);
+                 client.println(CONTENT_TYPE);
+                 client.println(CONNECTION);
+                 client.stop();
+                }
+                break;
             }
+            
+          default:
+             client.println(REPONSE_400);
+             client.println(CONTENT_TYPE);
+             client.println(CONNECTION);
+             client.stop();
+             break;
         }
          
-        client.println("HTTP/1.0 200 ok");
-        client.println("Content-Type: application/json");
-        client.println("Connection: close");
-        client.stop();
+         client.println(REPONSE_200);
+         client.println(CONTENT_TYPE);
+         client.println(CONNECTION);
+         client.stop();
      }
      else
      {
@@ -209,27 +238,36 @@ void loop()
         JsonObject& root = doc.to<JsonObject>();
       
         // Create the "analog" array
-        JsonArray& analogValues = root.createNestedArray("analog");
+        String crypt = "analog";
+        crypt = cryptage(crypt, PARAM_C);
+        JsonArray& analogValues = root.createNestedArray(crypt);
         for (int pin = 0; pin < 6; pin++) {
+          
           // Read the analog input
-          int value = analogRead(pin);
-      
+          crypt = String(analogRead(pin));
+          crypt = cryptage(crypt, VALUE_C, NUMBER);
+          
           // Add the value at the end of the array
-          analogValues.add(value);
+          analogValues.add(crypt);
         }
       
         // Create the "digital" array
-        JsonArray& digitalValues = root.createNestedArray("digital");
+        crypt = "digital";
+        crypt = cryptage(crypt, PARAM_C);
+        JsonArray& digitalValues = root.createNestedArray(crypt);
         for (int pin = 0; pin < 14; pin++)
         {
           // Read the digital input
-          int value = digitalRead(pin);
-      
+          crypt = String(digitalRead(pin));
+          crypt = cryptage(crypt, VALUE_C, NUMBER);  
+              
           // Add the value at the end of the array
-          digitalValues.add(value);
+          digitalValues.add(crypt);
         }
-      
-        JsonArray& cpt_values = root.createNestedArray("capteurs");
+        
+        crypt = "capteurs";
+        crypt = cryptage(crypt, PARAM_C);
+        JsonArray& cpt_values = root.createNestedArray(crypt);
         float temperature, humidity;
       
         /* Reading of temperature and humidity, with error management */
@@ -237,21 +275,29 @@ void loop()
         {
         case DHT_SUCCESS:
           VALUE_SENSOR_HEATING = temperature;
-          cpt_values.add(temperature);
-          cpt_values.add(humidity);
+          
+          crypt = String(temperature);
+          crypt = cryptage(crypt, VALUE_C, NUMBER);  
+          cpt_values.add(crypt);
+          
+          crypt = String(humidity);
+          crypt = cryptage(crypt, VALUE_C, NUMBER);  
+          cpt_values.add(crypt);
           break;
       
-          default:
-            cpt_values.add(0);
-            cpt_values.add(0);
-            break;
+        default:
+          crypt = "0";
+          crypt = cryptage(crypt, VALUE_C, NUMBER);  
+          cpt_values.add(crypt);
+          cpt_values.add(crypt);
+          break;
         }
       
         // SEND THE JSON FILE TO THE CLIENT (Write response headers)
-        client.println("HTTP/1.0 200 OK");
-        client.println("Content-Type: application/json");
-        client.println("Connection: close");
-        client.println();
+         client.println(REPONSE_200);
+         client.println(CONTENT_TYPE);
+         client.println(CONNECTION);
+         client.println();
       
         // Write JSON document
         serializeJsonPretty(root, client);
@@ -262,188 +308,13 @@ void loop()
   }
   else
   {
-    client.println("HTTP/1.0 403 Forbidden");
-    client.println("Content-Type: application/json");
-    client.println("Connection: close");
-    client.stop();
+   client.println(REPONSE_403);
+   client.println(CONTENT_TYPE);
+   client.println(CONNECTION);
+   client.stop();
   }
 
 }
-
-
-void output_piloted_pwm(const int& param, const int& value, const int& fixture)
-{
-  if(value)
-  {
-    analogWrite(param, fixture);
-  }
-
-  else
-  {
-    analogWrite(param, 0);
-  }
-}
-
-
-
-
-
-void output_piloted(const int& param, const int& value, const int& fixture, const int& value_sensor)
-{
-  if(value)
-  {
-    if(value_sensor > fixture)
-    {
-      digitalWrite(param, value);
-    }
-
-    else
-    {
-      digitalWrite(param, 0);
-    }
-  }
-
-  else
-  {
-    digitalWrite(param, value);
-  }
-}
-
-
-
-
-
-void update_output_piloted(const int& pin, const bool& state, const int& fixture, const int& value_sensor)
-{
-  if(state)
-  {
-
-    if(value_sensor - 3 > fixture)
-    {
-      digitalWrite(pin, LOW);
-    }
-    else
-    {
-      digitalWrite(pin, HIGH);
-    }
-  }
-  else
-  {
-    digitalWrite(pin, LOW);
-  }
-}
-
-
-
-
-
-byte readDHT11(byte pin, float* temperature, float* humidity)
-{
-
-  /* read sensor */
-  byte data[5];
-  byte ret = readDHT(pin, data, 18, 1000);
-
-  /* detection error communication */
-  if (ret != DHT_SUCCESS)
-    return ret;
-
-  /* calculate the humidity and temp */
-  *humidity = data[0];
-  *temperature = data[2];
-
-  /* Ok */
-  return DHT_SUCCESS;
-}
-
-
-
-
-
-byte readDHT(byte pin, byte* data, unsigned long start_time, unsigned long timeout)
-{
-  data[0] = data[1] = data[2] = data[3] = data[4] = 0;
-  // start_time millisecondes
-  // timeout microsecondes
-  uint8_t bit = digitalPinToBitMask(pin);
-  uint8_t port = digitalPinToPort(pin);
-  volatile uint8_t *ddr = portModeRegister(port);   // Registre MODE (INPUT / OUTPUT)
-  volatile uint8_t *out = portOutputRegister(port); // Registre OUT (écriture)
-  volatile uint8_t *in = portInputRegister(port);   // Registre IN (lecture)
-
-  unsigned long max_cycles = microsecondsToClockCycles(timeout);
-
-  *out |= bit;  // PULLUP
-  *ddr &= ~bit; // INPUT
-  delay(100);
-
-  /* wake up the sensor */
-  *ddr |= bit;  // OUTPUT
-  *out &= ~bit; // LOW
-  delay(start_time);
-  noInterrupts();
-
-  /* listening to the sensor*/
-  *out |= bit;  // PULLUP
-  delayMicroseconds(40);
-  *ddr &= ~bit; // INPUT
-
-  /* Waiting for the sensor response */
-  timeout = 0;
-  while(!(*in & bit)) {
-    if (++timeout == max_cycles) {
-        interrupts();
-        return DHT_TIMEOUT_ERROR;
-      }
-  }
-
-  timeout = 0;
-  while(*in & bit) {
-    if (++timeout == max_cycles) {
-        interrupts();
-        return DHT_TIMEOUT_ERROR;
-      }
-  }
-
-  /* Reading sensor data (40 bits) */
-  for (byte i = 0; i < 40; ++i) {
-
-    /* état LOW */
-    unsigned long cycles_low = 0;
-    while(!(*in & bit)) {
-      if (++cycles_low == max_cycles) {
-        interrupts();
-        return DHT_TIMEOUT_ERROR;
-      }
-    }
-
-    /* état HIGH */
-    unsigned long cycles_high = 0;
-    while(*in & bit) {
-      if (++cycles_high == max_cycles) {
-        interrupts();
-        return DHT_TIMEOUT_ERROR;
-      }
-    }
-
-    data[i / 8] <<= 1;
-    if (cycles_high > cycles_low) {
-      data[i / 8] |= 1;
-    }
-  }
-
-  interrupts();
-
-
-  byte checksum = (data[0] + data[1] + data[2] + data[3]) & 0xff;
-  if (data[4] != checksum)
-    return DHT_CHECKSUM_ERROR; /* error checksum */
-  else
-    return DHT_SUCCESS; /* not error */
-
-}
-
-
 
 
 

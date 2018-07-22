@@ -1,5 +1,4 @@
 
-#include <Arduino.h>
 #include "Url.h"
 
 Element::Element(): m_param(""), m_value("")
@@ -23,7 +22,15 @@ String Element::get_value(void) const
   return this -> m_value;
 }
 
+void Element::set_param(String s) 
+{
+	this -> m_param = s;
+}
 
+void Element::set_value(String s) 
+{
+	this -> m_value = s;
+}
 
 
 
@@ -43,7 +50,7 @@ void Parameters::filter(char& c)
   if(this -> m_recording)
   {
 
-    if(c == END)
+    if(c == END || c == '\n')
     {
 
       if(this -> m_v_param.length() != 0 && this -> m_v_valeur.length() != 0)
@@ -95,8 +102,7 @@ void Parameters::filter(char& c)
   }
 }
 
-
-Element Parameters::get_element(int index) const
+Element& Parameters::get_to_index(int index)
 {
   return this -> m_table_el[index];
 }
@@ -106,3 +112,15 @@ int Parameters::length(void)
   return this -> m_cpt;
 }
 
+
+String Parameters::operator[](String s)
+{
+  for(int index(0); index < this -> m_cpt; index++)
+  {
+    if(this -> m_table_el[index].get_param() == s)
+    {
+      return this -> m_table_el[index].get_value();
+    }
+  }
+  return "";
+}

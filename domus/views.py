@@ -13,7 +13,8 @@ import json
 import requests
 
 from .forms import Login, Contact
-from .variables_globales import KEY
+from .variables_globales import KEY, CRYPTAGES
+from .utils import Crypthographie, convert_dict_to_list, convert_list_to_dict
 
 
 
@@ -93,9 +94,14 @@ def contact(request):
 @csrf_exempt
 def update(request):
     #VARIABLES
-    url = "http://192.168.1.22"
+    # url = "http://83.201.217.69:3456"
+    url = "http://192.168.1.15"
     r = ""
     context = {}
+    param = {KEY[0]: KEY[1]}
+    cryptage = Crypthographie()
+    cryptage.add_key(CRYPTAGES[0][0], CRYPTAGES[0][1], CRYPTAGES[0][2])
+    cryptage.add_key(CRYPTAGES[1][0], CRYPTAGES[1][1], CRYPTAGES[1][2])
 
     #IF REQUEST IS POST
     if request.method == 'POST':
@@ -103,21 +109,49 @@ def update(request):
         # for preparation of the url towards
         # the microcontroller
         # preparing the URL
-        r_type = request.POST.get("type")
-        r_el = request.POST.get("element")
-        r_val = request.POST.get("valeur")
-        print("{}:{}:{}".format(r_type, r_el, r_val))
-        url_get = url + "?{}={}&{}={}&{}={}&{}={}".format(KEY[0],KEY[1],"type", r_type, "element", r_el, "valeur", r_val)
 
-        requests.get(url_get)
+        for i in request.POST.keys():
+            param[i] = request.POST.get(i)
+
+        param = convert_dict_to_list(param)
+        container_crypt = []
+        for i in param:
+            p = cryptage.cryptage(i[0], "param")
+            v = cryptage.cryptage(i[1], "valeur")
+            container_crypt.append([p, v])
+
+        param = convert_list_to_dict(container_crypt)
+        print(param)
+
+        requests.get(url, params=param)
 
     #ELSE REQUEST IS GET
     else:
+        param = convert_dict_to_list(param)
+        container_crypt = []
+        for i in param:
+            p = cryptage.cryptage(i[0], "param")
+            v = cryptage.cryptage(i[1], "valeur")
+            container_crypt.append([p, v])
 
-        url_get = url + "?{}={}".format(KEY[0], KEY[1])
-        r = requests.get(url_get).json()
-
-        context = {'valeur': r}
-
+        param = convert_list_to_dict(container_crypt)
+        r = requests.get(url, params=param).json()
+        print(r)
+        dectryp_dict = {}
+        for keys, values in r.items():
+            dectryp_liste = []
+            for i in values:
+                dectryp_liste.append(cryptage.decryptage(i, "valeur"))
+            dectryp_dict[cryptage.decryptage(keys, "param")] = dectryp_liste
+        print(dectryp_dict)
+        context = {'valeur': dectryp_dict}
 
     return JsonResponse(context)
+
+def test(request):
+    context = {}
+    url = "http://192.168.1.15"
+    r = requests.get(url).json()
+    print(r)
+    context = {'valeur': r}
+    return render(request, 'domus/test.html', context)
