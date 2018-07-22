@@ -94,7 +94,8 @@ def contact(request):
 @csrf_exempt
 def update(request):
     #VARIABLES
-    url = "http://192.168.1.22"
+    # url = "http://83.201.217.69:3456"
+    url = "http://192.168.1.15"
     r = ""
     context = {}
     param = {KEY[0]: KEY[1]}
@@ -146,3 +147,11 @@ def update(request):
         context = {'valeur': dectryp_dict}
 
     return JsonResponse(context)
+
+def test(request):
+    context = {}
+    url = "http://192.168.1.15"
+    r = requests.get(url).json()
+    print(r)
+    context = {'valeur': r}
+    return render(request, 'domus/test.html', context)

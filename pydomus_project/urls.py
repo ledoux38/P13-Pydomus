@@ -28,4 +28,5 @@ urlpatterns = [
     url(r'^admin/', admin.site.urls),
     url(r'^contact/$', views.contact, name='contact'),
     url(r'^mentions_legales/$', views.mentionLegales, name='mention_legales'),
+    url(r'^page_test/$', views.test, name='page_test'),
 ]
