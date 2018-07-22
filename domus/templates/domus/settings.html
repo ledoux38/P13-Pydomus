@@ -1,0 +1,129 @@
+{% extends 'domus/base_generic.html' %}
+{% load static %}
+{% block content %}
+<div class="container-fluid settings">
+    <!-- bar navigation -->
+    <div class="row header">
+        {% include 'domus/nav_bar.html' %}
+    </div>
+
+    <!-- settings-corp -->
+    <div class="container settings-corp">
+
+      <!-- display info general -->
+      <div class="row info-general">
+
+        <!-- info general descriptif-label-->
+        <div class="row">
+          <label for="text" class="label-group descriptif-label">Informations Generales</label>
+        </div>
+        <!-- END info general descriptif-label-->
+
+        <!-- info general-->
+        <div class="container-fluid">
+          <div class="row row-settings border border-dark rounded info-general">
+
+            <div class="container-fluid">
+              <form>
+                <div class="row row-settings">
+                  <div class="col-sm-2">
+                    <label for="staticEmail" class="col-sm-2 col-form-label ">Nom:</label>
+                  </div>
+
+                  <div class="col-sm-10">
+                    <input type="text" class="form-control" placeholder="XXXXXXXXX" aria-label="percentage" aria-describedby="basic-addon2">
+                  </div>
+                </div>
+
+                <div class="row row-settings">
+                  <div class="col-sm-2">
+                    <label for="staticEmail" class="col-sm-2 col-form-label">Prénom:</label>
+                  </div>
+
+                  <div class="col-sm-10">
+                    <input type="text" class="form-control" placeholder="XXXXXXXXX" aria-label="percentage" aria-describedby="basic-addon2">
+                  </div>
+                </div>
+
+                <div class="row row-settings">
+                  <div class="col-sm-2">
+                    <label for="staticEmail" class="col-sm-2 col-form-label">@mail:</label>
+                  </div>
+
+                  <div class="col-sm-10">
+                    <input type="text" class="form-control" placeholder="XXXXXXXXX" aria-label="percentage" aria-describedby="basic-addon2">
+                  </div>
+                </div>
+
+              </form>
+            </div>
+          </div>
+        </div>
+        <!-- END info general -->
+      </div>
+      <!-- END display info general -->
+
+      <!-- Modifications -->
+      <div class="row Modifications">
+
+        <!-- display modification generale-->
+        <div class="col-sm-6 col-settings">
+
+            <!-- modification general descriptif-label-->
+            <div class="row row-settings">
+                <label for="text" class="label-group descriptif-label">Modifications generales</label>
+            </div>
+            <!--END modification general descriptif-label-->
+
+            <div class="row row-settings-col  border border-dark rounded">
+
+              <!-- modification general-->
+              <div class="row row-settings">
+                <p> Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. </p>
+              </div>
+              <!-- END modification general-->
+
+            </div>
+
+        </div>
+        <!--END display modification generale-->
+
+        <!-- display modification generale avancée-->
+        <div class="col-sm-6 col-settings">
+
+          <!-- modification generale avancée descriptif-label-->
+          <div class="row row-settings">
+            <label for="text" class="label-group descriptif-label">Modifications avancées</label>
+          </div>
+          <!--END modification generale avancée descriptif-label-->
+
+          <div class=" row row-settings-col  border border-dark rounded">
+
+            <!-- modification generale avancée-->
+            <div class="row row-settings">
+              <p> Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. </p>
+            </div>
+            <!--END modification generale avancée-->
+
+          </div>
+
+        </div>
+        <!--END display modification generale avancée-->
+
+      </div>
+      <!-- END Modifications -->
+
+      <!-- control -->
+      <div class="row">
+        <p> Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. </p>
+      </div>
+      <!-- END control -->
+    </div>
+    <!-- END settings-corp -->
+
+    <!-- footer -->
+    <div class="row footer">
+        {% include 'domus/footer.html' %}
+    </div>
+</div>
+{% endblock %}

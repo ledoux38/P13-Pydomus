@@ -1,0 +1,56 @@
+{% extends 'domus/base_generic.html' %}
+{% load static %}
+{% block content %}
+
+<div class="container-fluid contact">
+    <!-- bar navigation -->
+    <div class="row header">
+        {% include 'domus/nav_bar.html' %}
+    </div>
+    <!--END bar navigation -->
+
+    <!-- contact-form-corp -->
+    <div class="row row-settings border border-dark rounded contact-form-corp">
+
+      <!-- contact-form -->
+      <div class="row row-settings">
+
+        <form action="{% url 'domus:contact' %}" method="post">
+          {% csrf_token %}
+          <div class="form-group">
+            <label for="exampleFormControlInput1">Nom</label>
+             {{ login.name }}
+          </div>
+
+          <div class="form-group">
+            <label for="exampleFormControlInput1">Adresse e-mail*</label>
+             {{ login.email }}
+          </div>
+
+          <div class="form-group">
+            <label for="exampleFormControlInput1">Objet</label>
+            {{ login.objet }}
+          </div>
+
+          <div class="form-group">
+            <label for="exampleFormControlTextarea1">Comment pouvons-nous vous aider ?*</label>
+            {{ login.textArea }}
+          </div>
+          <div class="form-group">
+              <button type="submit" class="btn btn-primary btn-lg btn-block">Envoi</button>
+          </div>
+        </form>
+
+      </div>
+      <!-- END contact-form -->
+
+    </div>
+    <!-- END contact-form-corp -->
+
+    <!-- footer -->
+    <div class="row footer">
+        {% include 'domus/footer.html' %}
+    </div>
+    <!--END footer -->
+</div>
+{% endblock %}

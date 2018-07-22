@@ -1,0 +1,8 @@
+__obsoletes__
+configuration
+documentations
+env
+__pycache__
+pydomus_project/staticfiles/
+pydomus_project/settings/production.py
+Variables_globales.h
