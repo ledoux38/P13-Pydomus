@@ -44,10 +44,16 @@ def loginUser(request):
             if user is not None:
                 login(request, user)
                 return render(request, 'domus/index.html')
+
     # If the method is of type GET
-    form = Login()
-    context = {"login": form}
-    return render(request, 'domus/login.html', context)
+    else:
+        if request.user.is_authenticated:
+            context = {"index":True}
+            return render(request, 'domus/index.html', context)
+        else:
+            form = Login()
+            context = {"login": form}
+            return render(request, 'domus/login.html', context)
 
 def logoutUser(request):
     """function used to disconnect users"""
@@ -150,7 +156,7 @@ def update(request):
 
 def test(request):
     context = {}
-    url = "http://pydomus.hopto.org:3000/" 
+    url = "http://pydomus.hopto.org:3000/"
     r = requests.get(url).json()
     print(r)
     context = {'valeur': r}
