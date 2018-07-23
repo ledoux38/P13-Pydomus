@@ -6,3 +6,4 @@ __pycache__
 pydomus_project/staticfiles/
 pydomus_project/settings/production.py
 Variables_globales.h
+depot.txt
