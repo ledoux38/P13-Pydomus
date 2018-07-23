@@ -30,7 +30,7 @@ $(function()
        });
     }
 
-    setInterval(update, 5000);
+    setInterval(update, 60000);
 
 
     //////////////////////////////////////////////
@@ -189,22 +189,4 @@ $(function()
         event.preventDefault();
       }
     );
-    // CONTROL
-    // $('#ON').click
-    // (
-    //   function ()
-    //   {
-    //     $.post("/domus/update/",{7: 1});
-    //     event.preventDefault();
-    //   }
-    // );
-
-    // $('#OFF').click
-    // (
-    //   function ()
-    //   {
-    //     $.post("/domus/update/",{7: 0});
-    //     event.preventDefault();
-    //   }
-    // );
 });

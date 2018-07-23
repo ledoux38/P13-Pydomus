@@ -24,7 +24,8 @@ from .utils import Crypthographie, convert_dict_to_list, convert_list_to_dict
 @login_required(login_url='/domus/login')
 def index(request):
     """ensures the display of the home page"""
-    return render(request, 'domus/index.html')
+    context = {"index":True}
+    return render(request, 'domus/index.html', context)
 
 def loginUser(request):
     """ensures the display of the login page
@@ -94,8 +95,7 @@ def contact(request):
 @csrf_exempt
 def update(request):
     #VARIABLES
-    # url = "http://83.201.217.69:3456"
-    url = "http://192.168.1.15"
+    url = "http://pydomus.hopto.org:3000"
     r = ""
     context = {}
     param = {KEY[0]: KEY[1]}
@@ -150,7 +150,7 @@ def update(request):
 
 def test(request):
     context = {}
-    url = "http://192.168.1.15"
+    url = "http://pydomus.hopto.org:3000/" 
     r = requests.get(url).json()
     print(r)
     context = {'valeur': r}
