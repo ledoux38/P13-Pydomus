@@ -41,16 +41,24 @@
 
         <!-- modification-->
         <div class="container border border-dark rounded info-general-forms">
-          <form>
+          <form action="{% url 'domus:settings' %}" method="post">
+            {% csrf_token %}
             <div class="form-row">
-              <input type="text" class="form-control input-settings" placeholder="Nom">
-              <input type="text" class="form-control input-settings" placeholder="Prénom">
-              <input type="text" class="form-control input-settings" placeholder="E-mail">
-              <input type="text" class="form-control input-settings" placeholder="Mot de passe">
-              <input type="text" class="form-control input-settings" placeholder="Url APD">
+              <input type="text" class="form-control input-settings" name="username" id="username" placeholder="identifiant utilisateur">
+
+              <input type="text" class="form-control input-settings" name="nom" id="nom" placeholder="Nom">
+
+              <input type="text" class="form-control input-settings" name="prenom" id="prenom" placeholder="Prénom">
+
+              <input type="text" class="form-control input-settings" name="email" id="email" placeholder="E-mail">
+
+              <input type="text" class="form-control input-settings" name="mdp" id="mdp" placeholder="Mot de passe">
+
+              <input type="text" class="form-control input-settings" name="url" id="url" placeholder="Url APD">
+
             </div>
             <div class="row m-p">
-              <button type="button" class="btn btn-primary">Confirmer</button>
+              <button type="submit" class="btn btn-primary">Confirmer</button>
             </div>
           </form>
         </div>

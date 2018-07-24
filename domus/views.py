@@ -8,7 +8,7 @@ from django.contrib.auth import authenticate, login, logout
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.core.mail import send_mail
-
+from django.contrib.auth.models import User
 import json
 import requests
 
@@ -68,8 +68,35 @@ def settings(request):
     as well as the authentication
     procedure of the user
     """
-    context = {}
-    return render(request, 'domus/settings.html', context)
+    # If the method is of type POST
+    if request.method == 'POST':
+        user = User.objects.get(username=request.user)
+
+        if not request.POST.get("username") == None:
+            user.username = request.POST.get("username")
+            user.save()
+        if not request.POST.get("nom") == None:
+            user.last_name = request.POST.get("nom")
+            user.save()
+        if not request.POST.get("prenom") == None:
+            user.first_name = request.POST.get("prenom")
+            user.save()
+        if not request.POST.get("email") == None:
+            user.email = request.POST.get("email")
+            user.save()
+        if not request.POST.get("mdp") == None:
+            user.set_password = request.POST.get("mdp")
+            user.save()
+        if not request.POST.get("url") == None:
+            pass
+
+    # If the method is of type GET
+    else:
+        pass
+
+    return render(request, 'domus/settings.html')
+
+    # return render(request, 'domus/settings.html')
 
 def mentionLegales(request):
     """
@@ -87,10 +114,10 @@ def contact(request):
     # If the method is of type POST
     if request.method == 'POST':
         f = Contact(request.POST)
-        name = f['name']
-        mail = f['email']
-        objet = f['objet']
-        textArea = f['textArea']
+        name = request.POST.get('name')
+        mail = request.POST.get('email')
+        objet = request.POST.get('objet')
+        textArea = request.POST.get('textArea')
         toMail = "ledoux.florian30@gmail.com"
         send_mail(objet, textArea, mail, [toMail], fail_silently=False,)
 
