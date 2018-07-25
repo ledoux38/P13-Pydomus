@@ -12,6 +12,7 @@ from django.contrib.auth.models import User
 import json
 import requests
 
+from .models import *
 from .forms import Login, Contact
 from .variables_globales import KEY, CRYPTAGES
 from .utils import Crypthographie, convert_dict_to_list, convert_list_to_dict
@@ -71,6 +72,7 @@ def settings(request):
     # If the method is of type POST
     if request.method == 'POST':
         user = User.objects.get(username=request.user)
+        param = Parameters.objects.get(id=1)
 
         if not request.POST.get("username") == None:
             user.username = request.POST.get("username")
@@ -88,13 +90,12 @@ def settings(request):
             user.set_password = request.POST.get("mdp")
             user.save()
         if not request.POST.get("url") == None:
-            pass
+            param.url = request.POST.get("url")
+            param.save()
 
     # If the method is of type GET
-    else:
-        pass
-
-    return render(request, 'domus/settings.html')
+    context = {"user": user, "parameters":param}
+    return render(request, 'domus/settings.html', context)
 
     # return render(request, 'domus/settings.html')
 
@@ -128,10 +129,10 @@ def contact(request):
 @csrf_exempt
 def update(request):
     #VARIABLES
-    url = "http://pydomus.hopto.org:3000"
+    url = Parameters.objects.get(id=1).url
     r = ""
     context = {}
-    param = {KEY[0]: KEY[1]}
+    param = {Parameters.objects.get(id=1).key_parameters: Parameters.objects.get(id=1).key_value}
     cryptage = Crypthographie()
     cryptage.add_key(CRYPTAGES[0][0], CRYPTAGES[0][1], CRYPTAGES[0][2])
     cryptage.add_key(CRYPTAGES[1][0], CRYPTAGES[1][1], CRYPTAGES[1][2])

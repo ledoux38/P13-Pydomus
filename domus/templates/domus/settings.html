@@ -23,9 +23,12 @@
         <div class="container border border-dark rounded info-general-forms">
           <form>
             <div class="form-row">
-              <input type="text" class="form-control input-settings" placeholder="Nom" disabled>
-              <input type="text" class="form-control input-settings" placeholder="Prénom" disabled>
-              <input type="text" class="form-control input-settings" placeholder="E-mail" disabled>
+              <input type="text" class="form-control input-settings" placeholder="E-mail: {{ user.email }}" disabled>
+              <input type="text" class="form-control input-settings" placeholder= "Utilisateur: {{ user.username }}" disabled>
+              <input type="text" class="form-control input-settings" placeholder="Prénom: {{ user.first_name }}" disabled>
+              <input type="text" class="form-control input-settings" placeholder="Nom: {{ user.last_name }}" disabled>
+              <input type="text" class="form-control input-settings" placeholder="url APD: {{ parameters.url }}" disabled>
+              <!-- <input type="text" class="form-control input-settings" placeholder="url clé de cryptage: {{ user.last_name }}" disabled> -->
             </div>
           </form>
         </div>
