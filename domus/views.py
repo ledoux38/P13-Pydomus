@@ -11,10 +11,9 @@ from django.core.mail import send_mail
 from django.contrib.auth.models import User
 import json
 import requests
-
+import string
 from .models import *
 from .forms import Login, Contact
-from .variables_globales import KEY, CRYPTAGES
 from .utils import Crypthographie, convert_dict_to_list, convert_list_to_dict
 
 
@@ -129,13 +128,14 @@ def contact(request):
 @csrf_exempt
 def update(request):
     #VARIABLES
-    url = Parameters.objects.get(id=1).url
+    parameters = Parameters.objects.get(id=1)
+    url = parameters.url
     r = ""
     context = {}
-    param = {Parameters.objects.get(id=1).key_parameters: Parameters.objects.get(id=1).key_value}
+    param ={'key': parameters.key_identity}
     cryptage = Crypthographie()
-    cryptage.add_key(CRYPTAGES[0][0], CRYPTAGES[0][1], CRYPTAGES[0][2])
-    cryptage.add_key(CRYPTAGES[1][0], CRYPTAGES[1][1], CRYPTAGES[1][2])
+    cryptage.add_key("param", string.ascii_lowercase, parameters.key_parameters)
+    cryptage.add_key("valeur", string.digits, parameters.key_value)
 
     #IF REQUEST IS POST
     if request.method == 'POST':
@@ -156,7 +156,6 @@ def update(request):
 
         param = convert_list_to_dict(container_crypt)
         print(param)
-
         requests.get(url, params=param)
 
     #ELSE REQUEST IS GET

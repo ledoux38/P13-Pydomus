@@ -9,3 +9,4 @@ class Parameters(models.Model):
     port = models.TextField()
     key_parameters = models.TextField()
     key_value = models.TextField()
+    key_identity = models.TextField()
