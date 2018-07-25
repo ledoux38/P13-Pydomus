@@ -65,7 +65,7 @@
 // GLOBAL VARIABLES
 ///////////////////////////////////////////////////////////////////
 //Adress IP
-byte ip[] = {192, 168, 1, 22};
+byte ip[] = {192, 168, 1, 15};
 // Adress MAC
 byte mac[] = {0x90, 0xA2, 0xDA, 0x11, 0x23, 0xCF};
 
@@ -96,18 +96,18 @@ void setup()
   pinMode(PIN_CPT, INPUT_PULLUP);
   // serial port initialization
 
-//  Serial.begin(9600);
+  Serial.begin(9600);
   while (!Serial) continue;
 
   // Initialize Ethernet libary
-  Ethernet.begin(mac, ip);
+  Ethernet.begin(mac);
 
   // Start to listen
   server.begin();
 
-//  Serial.println(F("Server is ready."));
-//  Serial.print(F("Please connect to http://"));
-//  Serial.println(Ethernet.localIP());
+  Serial.println(F("Server is ready."));
+  Serial.print(F("Please connect to http://"));
+  Serial.println(Ethernet.localIP());
 }
 
 
@@ -126,7 +126,7 @@ void loop()
   
   // If no client connects I start again at the beginning of the loop
   if (!client) return;
-  
+  Serial.println(F("client."));
   Parameters parameters;
 
   // DECODING VARIABLES GET URL
@@ -150,19 +150,29 @@ void loop()
   
   if(parameters["key"].toInt() == KEY)
   {
+  Serial.println(F("securité ok."));
   
      if(parameters.length() > 1)
      {
-        
+        Serial.println(F("reception d'un ordre"));
+        int e; 
+        e = parameters["element"].toInt();
+        Serial.println(e);
+        int v; 
+        v = parameters["valeur"].toInt();
+        Serial.println(v);
         switch(parameters["type"].toInt())
         {
+
           case 1:
-            digitalWrite(parameters["element"].toInt(), parameters["valeur"].toInt());
+            Serial.println(F("tor"));
+            digitalWrite(e, v);
             break;
   
           case 2:
-            switch(parameters["element"].toInt())
+            switch(e)
             {
+             Serial.println(F("mettre a jour valeur"));
              // update fixture lighting main
              case 100:
                update(LIGHTING_FIXTURE_MAIN, parameters["valeur"].toInt(), MAXI_LIGHTING, MINI_LIGHTING);
@@ -179,6 +189,7 @@ void loop()
                break;
   
              default:
+               Serial.println(F("conneexion ok ordre mais erreur "));
                client.println(REPONSE_400);
                client.println(CONTENT_TYPE);
                client.println(CONNECTION);
@@ -208,6 +219,7 @@ void loop()
               default:
                 for(int i(0); i<3; i++)
                 {
+                 Serial.println(F("conneexion ok mais erreur element"));
                  client.println(REPONSE_400);
                  client.println(CONTENT_TYPE);
                  client.println(CONNECTION);
@@ -217,13 +229,14 @@ void loop()
             }
             
           default:
+             Serial.println(F("conneexion ok mais erreur type"));
              client.println(REPONSE_400);
              client.println(CONTENT_TYPE);
              client.println(CONNECTION);
              client.stop();
              break;
         }
-         
+         Serial.println(F("ok deco"));
          client.println(REPONSE_200);
          client.println(CONTENT_TYPE);
          client.println(CONNECTION);
@@ -231,6 +244,7 @@ void loop()
      }
      else
      {
+      Serial.println(F("reception d'un GET"));
         // PREPARING RESPONSE JSON (Allocate the JSON document)
         StaticJsonDocument<500> doc;
       
@@ -304,14 +318,17 @@ void loop()
       
         // Disconnect
         client.stop();
+        Serial.println(F("get ok deco"));
      }
   }
   else
   {
+
    client.println(REPONSE_403);
    client.println(CONTENT_TYPE);
    client.println(CONNECTION);
    client.stop();
+   Serial.println(F("erreur acces refusée"));
   }
 
 }
@@ -321,3 +338,4 @@ void loop()
 // See also
 //  https://arduinojson.org/
 //  https://www.arduino.cc/en/Reference/Ethernet
+

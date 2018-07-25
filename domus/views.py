@@ -44,6 +44,11 @@ def loginUser(request):
             if user is not None:
                 login(request, user)
                 return render(request, 'domus/index.html')
+            else:
+                form = Login()
+                context = {"login": form}
+                context["error"] = True
+                return render(request, 'domus/login.html', context)
 
     # If the method is of type GET
     else:
@@ -129,13 +134,16 @@ def contact(request):
 def update(request):
     #VARIABLES
     parameters = Parameters.objects.get(id=1)
-    url = parameters.url
+    # url = parameters.url
+    url = 'http://192.168.1.15:80'
     r = ""
     context = {}
-    param ={'key': parameters.key_identity}
+    param ={'key': '1234'}
     cryptage = Crypthographie()
-    cryptage.add_key("param", string.ascii_lowercase, parameters.key_parameters)
-    cryptage.add_key("valeur", string.digits, parameters.key_value)
+    # cryptage.add_key("param", string.ascii_lowercase, parameters.key_parameters)
+    # cryptage.add_key("valeur", string.digits, parameters.key_value)
+    cryptage.add_key("param", 'abcdefghijklmnopqrstuvwxyz', "NBVCXWMLKJHGFDSQPOIUYTREZA")
+    cryptage.add_key("valeur", '0123456789', 'AZERTYUIOP')
 
     #IF REQUEST IS POST
     if request.method == 'POST':
@@ -148,6 +156,7 @@ def update(request):
             param[i] = request.POST.get(i)
 
         param = convert_dict_to_list(param)
+        print(param)
         container_crypt = []
         for i in param:
             p = cryptage.cryptage(i[0], "param")
@@ -160,7 +169,9 @@ def update(request):
 
     #ELSE REQUEST IS GET
     else:
+        print(param)
         param = convert_dict_to_list(param)
+        print(param)
         container_crypt = []
         for i in param:
             p = cryptage.cryptage(i[0], "param")
