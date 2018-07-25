@@ -181,11 +181,3 @@ def update(request):
         context = {'valeur': dectryp_dict}
 
     return JsonResponse(context)
-
-def test(request):
-    context = {}
-    url = "http://pydomus.hopto.org:3000/"
-    r = requests.get(url).json()
-    print(r)
-    context = {'valeur': r}
-    return render(request, 'domus/test.html', context)
