@@ -133,17 +133,15 @@ def contact(request):
 @csrf_exempt
 def update(request):
     #VARIABLES
-    parameters = Parameters.objects.get(id=1)
-    # url = parameters.url
-    url = 'http://192.168.1.15:80'
     r = ""
     context = {}
-    param ={'key': '1234'}
+
+    parameters = Parameters.objects.get(id=1)
+    url = parameters.url
+    param ={'key': parameters.key_identity}
     cryptage = Crypthographie()
-    # cryptage.add_key("param", string.ascii_lowercase, parameters.key_parameters)
-    # cryptage.add_key("valeur", string.digits, parameters.key_value)
-    cryptage.add_key("param", 'abcdefghijklmnopqrstuvwxyz', "NBVCXWMLKJHGFDSQPOIUYTREZA")
-    cryptage.add_key("valeur", '0123456789', 'AZERTYUIOP')
+    cryptage.add_key("param", string.ascii_lowercase, parameters.key_parameters)
+    cryptage.add_key("valeur", string.digits, parameters.key_value)
 
     #IF REQUEST IS POST
     if request.method == 'POST':
