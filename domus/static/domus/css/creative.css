@@ -211,22 +211,54 @@ html, body
   margin: 0px;
 }
 
+
+
+
 .settings
 {
+  width: 100%;
+  height: 100%;
   padding: 0px;
-}
-.settings-corp
-{
-  margin-top: 30px;
-  margin-bottom: 30px;
-  padding: 0px;
-  display: flex;
+  display: contents;
   flex-direction: column;
   justify-content: space-between;
-  height: 100%;
+}
+
+
+.settings-corp
+{
   background-color: white;
 }
 
+
+.info-general
+{
+  margin: auto;
+  padding: 1em;
+}
+
+.info-general-label
+{
+  margin: auto;
+  padding: 1em;
+}
+.m-p
+{
+  margin: auto;
+  padding: 1em;
+}
+.info-general-forms
+{
+  margin: auto;
+  padding: 1em;
+}
+
+.input-settings
+{
+  margin: 1em;
+}
+
+/*
 .settings-corp > .row
 {
   padding: 30px;
@@ -235,7 +267,7 @@ html, body
 
 .col-settings
 {
-  /* margin: 10px; */
+   margin: 10px;
 }
 
 .row-settings
@@ -254,6 +286,8 @@ html, body
   margin:10px;
   padding: 10px;
 }
+*/
+
 
 
 
@@ -270,16 +304,19 @@ html, body
 
 .contact
 {
+
   padding: 0px;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  height: 100%;
+  /* height: 100%; */
 }
 
 .contact-form-corp
 {
   margin: auto;
+  margin-top: 10px;
+  margin-bottom: 10px;
   padding: 30px;
   background-color: white;
 }
