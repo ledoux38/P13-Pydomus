@@ -1,6 +1,6 @@
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import get_user_model
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import render, get_object_or_404, redirect
 from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 from django.db import transaction, IntegrityError
 from django.http import HttpResponse
@@ -43,7 +43,8 @@ def loginUser(request):
             #We check if the data is correct
             if user is not None:
                 login(request, user)
-                return render(request, 'domus/index.html')
+                return redirect(index)
+
             else:
                 form = Login()
                 context = {"login": form}
@@ -53,8 +54,7 @@ def loginUser(request):
     # If the method is of type GET
     else:
         if request.user.is_authenticated:
-            context = {"index":True}
-            return render(request, 'domus/index.html', context)
+            return redirect(index)
         else:
             form = Login()
             context = {"login": form}
@@ -154,7 +154,6 @@ def update(request):
             param[i] = request.POST.get(i)
 
         param = convert_dict_to_list(param)
-        print(param)
         container_crypt = []
         for i in param:
             p = cryptage.cryptage(i[0], "param")
@@ -162,14 +161,11 @@ def update(request):
             container_crypt.append([p, v])
 
         param = convert_list_to_dict(container_crypt)
-        print(param)
         requests.get(url, params=param)
 
     #ELSE REQUEST IS GET
     else:
-        print(param)
         param = convert_dict_to_list(param)
-        print(param)
         container_crypt = []
         for i in param:
             p = cryptage.cryptage(i[0], "param")
@@ -178,14 +174,12 @@ def update(request):
 
         param = convert_list_to_dict(container_crypt)
         r = requests.get(url, params=param).json()
-        print(r)
         dectryp_dict = {}
         for keys, values in r.items():
             dectryp_liste = []
             for i in values:
                 dectryp_liste.append(cryptage.decryptage(i, "valeur"))
             dectryp_dict[cryptage.decryptage(keys, "param")] = dectryp_liste
-        print(dectryp_dict)
         context = {'valeur': dectryp_dict}
 
     return JsonResponse(context)
