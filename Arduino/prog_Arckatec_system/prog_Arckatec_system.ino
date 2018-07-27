@@ -65,7 +65,7 @@
 // GLOBAL VARIABLES
 ///////////////////////////////////////////////////////////////////
 //Adress IP
-byte ip[] = {192, 168, 1, 22};
+byte ip[] = {192, 168, 1, 15};
 // Adress MAC
 byte mac[] = {0x90, 0xA2, 0xDA, 0x11, 0x23, 0xCF};
 
@@ -86,7 +86,10 @@ bool HEATING = false;
 
 void setup()
 {
+//  Serial.begin(9600);
+//  while (!Serial) continue;
 
+  
   //  initialization of I / O variables
   for( int index = MINI_PIN; index <= MAXI_PIN; index ++)
   {
@@ -96,11 +99,10 @@ void setup()
   pinMode(PIN_CPT, INPUT_PULLUP);
   // serial port initialization
 
-//  Serial.begin(9600);
-  while (!Serial) continue;
+
 
   // Initialize Ethernet libary
-  Ethernet.begin(mac, ip);
+  Ethernet.begin(mac);
 
   // Start to listen
   server.begin();
@@ -126,7 +128,6 @@ void loop()
   
   // If no client connects I start again at the beginning of the loop
   if (!client) return;
-  
   Parameters parameters;
 
   // DECODING VARIABLES GET URL
@@ -150,18 +151,26 @@ void loop()
   
   if(parameters["key"].toInt() == KEY)
   {
+
   
      if(parameters.length() > 1)
      {
+
+        int e; 
+        e = parameters["element"].toInt();
+
+        int v; 
+        v = parameters["valeur"].toInt();
         
         switch(parameters["type"].toInt())
         {
+
           case 1:
-            digitalWrite(parameters["element"].toInt(), parameters["valeur"].toInt());
+            digitalWrite(e, v);
             break;
   
           case 2:
-            switch(parameters["element"].toInt())
+            switch(e)
             {
              // update fixture lighting main
              case 100:
@@ -185,7 +194,6 @@ void loop()
                client.stop();
                break;
             }
-            
             break;
             
           case 3:
@@ -215,6 +223,7 @@ void loop()
                 }
                 break;
             }
+            break;
             
           default:
              client.println(REPONSE_400);
@@ -223,7 +232,6 @@ void loop()
              client.stop();
              break;
         }
-         
          client.println(REPONSE_200);
          client.println(CONTENT_TYPE);
          client.println(CONNECTION);
@@ -231,28 +239,16 @@ void loop()
      }
      else
      {
+
         // PREPARING RESPONSE JSON (Allocate the JSON document)
-        StaticJsonDocument<500> doc;
+        StaticJsonDocument<300> doc;
       
         // Make our document represent an object
         JsonObject& root = doc.to<JsonObject>();
       
-        // Create the "analog" array
-        String crypt = "analog";
-        crypt = cryptage(crypt, PARAM_C);
-        JsonArray& analogValues = root.createNestedArray(crypt);
-        for (int pin = 0; pin < 6; pin++) {
-          
-          // Read the analog input
-          crypt = String(analogRead(pin));
-          crypt = cryptage(crypt, VALUE_C, NUMBER);
-          
-          // Add the value at the end of the array
-          analogValues.add(crypt);
-        }
-      
         // Create the "digital" array
-        crypt = "digital";
+
+        String crypt = "digital";
         crypt = cryptage(crypt, PARAM_C);
         JsonArray& digitalValues = root.createNestedArray(crypt);
         for (int pin = 0; pin < 14; pin++)
@@ -264,13 +260,15 @@ void loop()
           // Add the value at the end of the array
           digitalValues.add(crypt);
         }
-        
+
+
+
+//
         crypt = "capteurs";
         crypt = cryptage(crypt, PARAM_C);
         JsonArray& cpt_values = root.createNestedArray(crypt);
         float temperature, humidity;
-      
-        /* Reading of temperature and humidity, with error management */
+
         switch (readDHT11(PIN_CPT, &temperature, &humidity))
         {
         case DHT_SUCCESS:
@@ -286,13 +284,12 @@ void loop()
           break;
       
         default:
-          crypt = "0";
           crypt = cryptage(crypt, VALUE_C, NUMBER);  
-          cpt_values.add(crypt);
-          cpt_values.add(crypt);
+          cpt_values.add("0");
+          cpt_values.add("0");
           break;
         }
-      
+
         // SEND THE JSON FILE TO THE CLIENT (Write response headers)
          client.println(REPONSE_200);
          client.println(CONTENT_TYPE);
@@ -304,10 +301,12 @@ void loop()
       
         // Disconnect
         client.stop();
+
      }
   }
   else
   {
+
    client.println(REPONSE_403);
    client.println(CONTENT_TYPE);
    client.println(CONNECTION);
@@ -321,3 +320,4 @@ void loop()
 // See also
 //  https://arduinojson.org/
 //  https://www.arduino.cc/en/Reference/Ethernet
+

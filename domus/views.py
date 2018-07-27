@@ -1,6 +1,6 @@
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import get_user_model
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import render, get_object_or_404, redirect
 from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 from django.db import transaction, IntegrityError
 from django.http import HttpResponse
@@ -8,12 +8,12 @@ from django.contrib.auth import authenticate, login, logout
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.core.mail import send_mail
-
+from django.contrib.auth.models import User
 import json
 import requests
-
+import string
+from .models import *
 from .forms import Login, Contact
-from .variables_globales import KEY, CRYPTAGES
 from .utils import Crypthographie, convert_dict_to_list, convert_list_to_dict
 
 
@@ -43,11 +43,22 @@ def loginUser(request):
             #We check if the data is correct
             if user is not None:
                 login(request, user)
-                return render(request, 'domus/index.html')
+                return redirect(index)
+
+            else:
+                form = Login()
+                context = {"login": form}
+                context["error"] = True
+                return render(request, 'domus/login.html', context)
+
     # If the method is of type GET
-    form = Login()
-    context = {"login": form}
-    return render(request, 'domus/login.html', context)
+    else:
+        if request.user.is_authenticated:
+            return redirect(index)
+        else:
+            form = Login()
+            context = {"login": form}
+            return render(request, 'domus/login.html', context)
 
 def logoutUser(request):
     """function used to disconnect users"""
@@ -62,8 +73,35 @@ def settings(request):
     as well as the authentication
     procedure of the user
     """
-    context = {}
+    # If the method is of type POST
+    if request.method == 'POST':
+        user = User.objects.get(username=request.user)
+        param = Parameters.objects.get(id=1)
+
+        if not request.POST.get("username") == None:
+            user.username = request.POST.get("username")
+            user.save()
+        if not request.POST.get("nom") == None:
+            user.last_name = request.POST.get("nom")
+            user.save()
+        if not request.POST.get("prenom") == None:
+            user.first_name = request.POST.get("prenom")
+            user.save()
+        if not request.POST.get("email") == None:
+            user.email = request.POST.get("email")
+            user.save()
+        if not request.POST.get("mdp") == None:
+            user.set_password = request.POST.get("mdp")
+            user.save()
+        if not request.POST.get("url") == None:
+            param.url = request.POST.get("url")
+            param.save()
+
+    # If the method is of type GET
+    context = {"user": user, "parameters":param}
     return render(request, 'domus/settings.html', context)
+
+    # return render(request, 'domus/settings.html')
 
 def mentionLegales(request):
     """
@@ -81,10 +119,10 @@ def contact(request):
     # If the method is of type POST
     if request.method == 'POST':
         f = Contact(request.POST)
-        name = f['name']
-        mail = f['email']
-        objet = f['objet']
-        textArea = f['textArea']
+        name = request.POST.get('name')
+        mail = request.POST.get('email')
+        objet = request.POST.get('objet')
+        textArea = request.POST.get('textArea')
         toMail = "ledoux.florian30@gmail.com"
         send_mail(objet, textArea, mail, [toMail], fail_silently=False,)
 
@@ -95,13 +133,15 @@ def contact(request):
 @csrf_exempt
 def update(request):
     #VARIABLES
-    url = "http://pydomus.hopto.org:3000"
     r = ""
     context = {}
-    param = {KEY[0]: KEY[1]}
+
+    parameters = Parameters.objects.get(id=1)
+    url = parameters.url
+    param ={'key': parameters.key_identity}
     cryptage = Crypthographie()
-    cryptage.add_key(CRYPTAGES[0][0], CRYPTAGES[0][1], CRYPTAGES[0][2])
-    cryptage.add_key(CRYPTAGES[1][0], CRYPTAGES[1][1], CRYPTAGES[1][2])
+    cryptage.add_key("param", string.ascii_lowercase, parameters.key_parameters)
+    cryptage.add_key("valeur", string.digits, parameters.key_value)
 
     #IF REQUEST IS POST
     if request.method == 'POST':
@@ -121,8 +161,6 @@ def update(request):
             container_crypt.append([p, v])
 
         param = convert_list_to_dict(container_crypt)
-        print(param)
-
         requests.get(url, params=param)
 
     #ELSE REQUEST IS GET
@@ -136,22 +174,12 @@ def update(request):
 
         param = convert_list_to_dict(container_crypt)
         r = requests.get(url, params=param).json()
-        print(r)
         dectryp_dict = {}
         for keys, values in r.items():
             dectryp_liste = []
             for i in values:
                 dectryp_liste.append(cryptage.decryptage(i, "valeur"))
             dectryp_dict[cryptage.decryptage(keys, "param")] = dectryp_liste
-        print(dectryp_dict)
         context = {'valeur': dectryp_dict}
 
     return JsonResponse(context)
-
-def test(request):
-    context = {}
-    url = "http://pydomus.hopto.org:3000/" 
-    r = requests.get(url).json()
-    print(r)
-    context = {'valeur': r}
-    return render(request, 'domus/test.html', context)
